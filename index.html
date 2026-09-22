@@ -28,6 +28,9 @@
   :root:not([data-theme="light"]) .ico,:root:not([data-theme="light"]) .chip .em,:root:not([data-theme="light"]) .catdot,:root:not([data-theme="light"]) .mico{
     background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
   }
+  :root:not([data-theme="light"]) .tab[aria-selected="true"]{color:hsl(var(--h,210) 72% 72%)}
+  :root:not([data-theme="light"]) .tab[aria-selected="true"] svg{background:hsl(var(--h,210) 45% 24%)}
+  :root:not([data-theme="light"]) .pend{border-left-color:hsl(var(--h,210) 55% 45%)}
 }
 :root[data-theme="dark"]{
   --bg:#121A1F;--surface:#1B252C;--ink:#E6ECEF;--muted:#9AA8B1;--line:#2C3942;
@@ -36,6 +39,9 @@
 :root[data-theme="dark"] .ico,:root[data-theme="dark"] .chip .em,:root[data-theme="dark"] .catdot,:root[data-theme="dark"] .mico{
   background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
 }
+:root[data-theme="dark"] .tab[aria-selected="true"]{color:hsl(var(--h,210) 72% 72%)}
+:root[data-theme="dark"] .tab[aria-selected="true"] svg{background:hsl(var(--h,210) 45% 24%)}
+:root[data-theme="dark"] .pend{border-left-color:hsl(var(--h,210) 55% 45%)}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
@@ -128,7 +134,7 @@ nav.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:re
 .pendsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px}
 .pendsum div{font-size:.85rem;color:var(--muted)}
 .pendsum b{display:block;font:600 1.1rem/1.2 "Bricolage Grotesque",sans-serif;color:var(--ink);font-variant-numeric:tabular-nums}
-.pend{padding:14px 0;border-top:1px solid var(--line)}
+.pend{padding:14px 0 14px 12px;border-top:1px solid var(--line);border-left:3px solid hsl(var(--h,210) 60% 55%);margin-left:-2px}
 .pend:first-of-type{border-top:0}
 .pend .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .pend .top b{font-weight:600;display:block}
@@ -196,7 +202,7 @@ select.txt{appearance:auto}
 .seg.four button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .mhint{font-size:.88rem;color:var(--muted);margin-top:8px;min-height:1.2em}
 .mhint.bad{color:var(--out)}
-.cardbox{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:.92rem}
+.cardbox{margin-top:10px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--soft)), color-mix(in srgb, var(--accent2) 14%, var(--soft)));font-size:.92rem}
 .cardbox .cbar span{background:var(--accent)}
 .cardbox .cbar span.w{background:var(--warn)}.cardbox .cbar span.x{background:var(--out)}
 .cardbox .row{display:flex;justify-content:space-between;gap:8px}
@@ -283,8 +289,8 @@ nav.tabs div{grid-template-columns:repeat(5,1fr)!important}
 nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .tab{display:flex!important;flex-direction:column;align-items:center;gap:3px;padding:8px 1px 10px!important;border-top:0!important;font-size:.72rem!important;font-weight:600}
 .tab svg{width:40px;height:26px;padding:3px 8px;border-radius:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:background .2s}
-.tab[aria-selected="true"]{color:var(--accent)}
-.tab[aria-selected="true"] svg{background:color-mix(in srgb, var(--accent) 16%, transparent)}
+.tab[aria-selected="true"]{color:hsl(var(--h,210) 55% 45%)}
+.tab[aria-selected="true"] svg{background:hsl(var(--h,210) 75% 90%)}
 /* sub-navegación */
 .subnav{display:flex;gap:6px;overflow-x:auto;padding:12px 0 2px;scrollbar-width:none}
 .subnav::-webkit-scrollbar{display:none}
@@ -730,11 +736,11 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 
 <nav class="tabs" role="tablist" aria-label="Secciones">
   <div>
-    <button class="tab" role="tab" data-view="add" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Registrar</span></button>
-    <button class="tab" role="tab" data-view="list" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Lista</span></button>
-    <button class="tab" role="tab" data-view="pend" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Fijos</span></button>
-    <button class="tab" role="tab" data-view="aho" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11a7 6 0 0 1 12.5-3.6L20 7l-.6 3.2A6 6 0 0 1 19 15l-1 1v3h-3v-2h-4v2H8v-3.2A6 6 0 0 1 5 11z"/><circle cx="15.5" cy="10" r=".6"/><path d="M10 7.5h3"/></svg><span>Ahorro</span></button>
-    <button class="tab" role="tab" data-view="sum" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg><span>Resumen</span></button>
+    <button class="tab" role="tab" data-view="add" aria-selected="true" style="--h:210"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg><span>Registrar</span></button>
+    <button class="tab" role="tab" data-view="list" aria-selected="false" style="--h:190"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Lista</span></button>
+    <button class="tab" role="tab" data-view="pend" aria-selected="false" style="--h:35"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Fijos</span></button>
+    <button class="tab" role="tab" data-view="aho" aria-selected="false" style="--h:275"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11a7 6 0 0 1 12.5-3.6L20 7l-.6 3.2A6 6 0 0 1 19 15l-1 1v3h-3v-2h-4v2H8v-3.2A6 6 0 0 1 5 11z"/><circle cx="15.5" cy="10" r=".6"/><path d="M10 7.5h3"/></svg><span>Ahorro</span></button>
+    <button class="tab" role="tab" data-view="sum" aria-selected="false" style="--h:340"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg><span>Resumen</span></button>
   </div>
 </nav>
 <div class="sheetbg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div></div>
@@ -1483,7 +1489,7 @@ function renderPend(){
   if(!all.length){ el.innerHTML='<p class="empty">No hay pagos pendientes para este mes. Agrega créditos y tarjetas con el formulario de abajo.</p>'; return; }
   all.forEach(p=>{
     const inMonth=list.includes(p), paid=inMonth && isPaidMonth(p), st=inMonth?status(p):null;
-    const row=mk('div','pend');
+    const row=mk('div','pend'); row.style.setProperty('--h',hue(p.nombre));
     const top=mk('div','top'); const left=mk('div'); const k=p.tipo==='consumo'?cuotaNum(p):0;
     const sub = p.tipo==='consumo' ? (inMonth?'Cuota '+k+' de '+p.total+' este mes':'Sin cuota este mes') : p.tipo==='tarjeta' ? 'Factura tarjeta' : 'Pago mensual';
     left.append(mk('b','',p.nombre), mk('small','',sub+', día '+p.dia));
@@ -1626,7 +1632,7 @@ function renderRecs(t){
   if(!list.length){ el.innerHTML='<p class="empty" style="padding:12px 0">'+(t==='sub'?'Agrega tus suscripciones con el formulario de abajo, tipo Suscripción.':'Agrega tu sueldo u otros ingresos que recibes cada mes, tipo Ingreso fijo.')+'</p>'; return; }
   const td=new Date().getDate(), cm=curMonth();
   list.forEach(s=>{
-    const row=mk('div','pend'+(s.activa===false?' paused':''));
+    const row=mk('div','pend'+(s.activa===false?' paused':'')); row.style.setProperty('--h',hue(s.nombre));
     const top=mk('div','top'), left=mk('div');
     left.append(mk('b','',s.nombre), mk('small','','Día '+s.dia+', '+(t==='ing'?(s.cat||'Sueldo')+', ':'')+medioInfo(s.medio).label+(s.usd?', '+fmtUsd(s.usd):'')), mk('br'));
     const pill=mk('span','pill'); left.appendChild(pill);

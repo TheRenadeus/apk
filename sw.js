@@ -1,5 +1,5 @@
 // Cambia este número cada vez que publiques cambios, para que el teléfono tome la versión nueva.
-const CACHE = 'mis-cuentas-v5';
+const CACHE = 'mis-cuentas-v6';
 const APP = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png'];
 
 self.addEventListener('install', e => {
