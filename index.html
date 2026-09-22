@@ -1884,7 +1884,17 @@ function renderBudget(){
       if(budMode==='all'){ if(v) config.budget[c]=v; else delete config.budget[c]; }
       else { const o=config.budgetMes[month]=config.budgetMes[month]||{}; if(raw==='') delete o[c]; else o[c]=v; if(!Object.keys(o).length) delete config.budgetMes[month]; }
       renderBudget(); renderAlerts(); await saveConfig(); toast('Presupuesto actualizado'); };
-    sub.append(mk('span','',b?(s>b?'Excedido en '+fmt(s-b):'Quedan '+fmt(b-s)):'Sin presupuesto'), inp);
+    const right=mk('div'); right.style.cssText='display:flex;gap:6px;align-items:center'; right.appendChild(inp);
+    if(config.cats.gasto.includes(c) && c!=='Otros' && c!=='Créditos y deudas'){
+      const del=mk('button','del','Eliminar');
+      armDelete(del,'Eliminar',async()=>{
+        config.cats.gasto=config.cats.gasto.filter(x=>x!==c); delete config.budget[c];
+        Object.values(config.budgetMes).forEach(o=>delete o[c]);
+        renderAll(); await saveConfig(); toast('Categoría eliminada');
+      });
+      right.appendChild(del);
+    }
+    sub.append(mk('span','',b?(s>b?'Excedido en '+fmt(s-b):'Quedan '+fmt(b-s)):'Sin presupuesto'), right);
     row.append(top,bar,sub);
     if(idx>=6 && !(b>0||s>0) && !budShowAll){ row.hidden=true; hiddenCount++; }
     el.appendChild(row);
@@ -1897,7 +1907,19 @@ function renderBudget(){
   $('#budTot').textContent=fmt(ts)+' de '+fmt(tb);
   const ins=spentBy('ingreso'), il=$('#inList'); il.innerHTML='';
   const ic=[...config.cats.ingreso]; Object.keys(ins).forEach(c=>{ if(!ic.includes(c)) ic.push(c); });
-  ic.forEach(c=>{ const r=mk('div','bud'); const top=mk('div','top'); const n=mk('span','num',fmt(ins[c]||0)); n.style.color='var(--in)'; top.append(mk('b','',c), n); r.appendChild(top); il.appendChild(r); });
+  ic.forEach(c=>{
+    const r=mk('div','bud'); const top=mk('div','top'); const n=mk('span','num',fmt(ins[c]||0)); n.style.color='var(--in)'; top.append(mk('b','',c), n); r.appendChild(top);
+    if(config.cats.ingreso.includes(c) && c!=='Otros ingresos'){
+      const sub=mk('div','sub'); sub.style.justifyContent='flex-end';
+      const del=mk('button','del','Eliminar');
+      armDelete(del,'Eliminar',async()=>{
+        config.cats.ingreso=config.cats.ingreso.filter(x=>x!==c);
+        renderAll(); await saveConfig(); toast('Categoría eliminada');
+      });
+      sub.appendChild(del); r.appendChild(sub);
+    }
+    il.appendChild(r);
+  });
 }
 function renderMedios(){
   const el=$('#medioList'); el.innerHTML=''; const o={};
