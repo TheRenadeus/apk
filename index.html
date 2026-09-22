@@ -25,7 +25,7 @@
     --bg:#121A1F;--surface:#1B252C;--ink:#E6ECEF;--muted:#9AA8B1;--line:#2C3942;
     --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
   }
-  :root:not([data-theme="light"]) .ico,:root:not([data-theme="light"]) .chip .em,:root:not([data-theme="light"]) .catdot,:root:not([data-theme="light"]) .mico{
+  :root:not([data-theme="light"]) .ico,:root:not([data-theme="light"]) .chip .em,:root:not([data-theme="light"]) .catdot,:root:not([data-theme="light"]) .mico,:root:not([data-theme="light"]) .intro-icn{
     background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
   }
   :root:not([data-theme="light"]) .tab[aria-selected="true"]{color:hsl(var(--h,210) 72% 72%)}
@@ -36,7 +36,7 @@
   --bg:#121A1F;--surface:#1B252C;--ink:#E6ECEF;--muted:#9AA8B1;--line:#2C3942;
   --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
 }
-:root[data-theme="dark"] .ico,:root[data-theme="dark"] .chip .em,:root[data-theme="dark"] .catdot,:root[data-theme="dark"] .mico{
+:root[data-theme="dark"] .ico,:root[data-theme="dark"] .chip .em,:root[data-theme="dark"] .catdot,:root[data-theme="dark"] .mico,:root[data-theme="dark"] .intro-icn{
   background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
 }
 :root[data-theme="dark"] .tab[aria-selected="true"]{color:hsl(var(--h,210) 72% 72%)}
@@ -440,6 +440,19 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
   nav.tabs,.fab{display:none!important}
 }
 #printArea{display:none}
+
+/* ===== v5: introducción de primer uso ===== */
+.introbg{position:fixed;inset:0;background:rgba(10,15,20,.55);z-index:30;display:flex;align-items:flex-end;justify-content:center;padding:0 0 env(safe-area-inset-bottom,0px)}
+.introsheet{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:18px 18px 0 0;padding:22px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.intro-icn{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:1.8rem;background:hsl(var(--h,210) 70% 93%);flex:none}
+.intro-title{font:700 1.35rem "Bricolage Grotesque",sans-serif;margin:14px 0 0}
+.intro-desc{color:var(--muted);line-height:1.55;margin:6px 0 0}
+.intro-example{border:1px solid var(--line);border-radius:14px;padding:10px 14px;background:var(--bg);margin-top:16px}
+.intro-example .lbl{font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.intro-dots{display:flex;justify-content:center;gap:6px;margin-top:4px}
+.intro-dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
+.intro-dots i.on{background:var(--accent);width:18px;border-radius:4px}
+.intro-nav{display:flex;align-items:center;gap:10px}
 </style>
 </head>
 <body>
@@ -760,6 +773,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
     <div class="panel" data-sec="datos">
       <h2>Tus datos</h2>
       <p class="note" id="bkInfo" style="margin-top:0"></p>
+      <button class="linkbtn" id="introReplay" style="padding:0">Ver la introducción de nuevo</button>
       <button class="btn ghost" id="installBtn" hidden>Instalar la app en este dispositivo</button>
       <h3 class="sub3">Apariencia</h3>
       <p class="note" style="margin-top:0">Elige el color de acento de la app.</p>
@@ -804,6 +818,18 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 </nav>
 <div class="sheetbg" id="sheetBg" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div></div>
 <div class="toast" id="toast" role="status"></div>
+<div class="introbg" id="introBg" hidden>
+  <div class="introsheet" id="introSheet" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div id="introBody"></div>
+    <div class="intro-dots" id="introDots" aria-hidden="true"></div>
+    <div class="intro-nav">
+      <button class="linkbtn" id="introSkip" style="padding:0">Saltar</button>
+      <span style="flex:1"></span>
+      <button class="sbtn" id="introBack" hidden>Atrás</button>
+      <button class="sbtn pri" id="introNext">Siguiente</button>
+    </div>
+  </div>
+</div>
 <div class="lock" id="lock" hidden role="dialog" aria-modal="true" aria-labelledby="lockTitle">
   <div class="lockin">
     <div class="lockicon" aria-hidden="true">🔒</div>
@@ -2103,6 +2129,52 @@ function renderGuide(){
   const hide=mk('button','linkbtn','Ocultar guía'); hide.onclick=async()=>{ config.guia.oculta=true; renderGuide(); await saveConfig(); toast('Guía oculta'); }; g.appendChild(hide);
 }
 
+/* ================= Introducción de primer uso ================= */
+function exMov(hueVal,icon,title,sub,amount,positivo){
+  const r=mk('div','mov'); const ic=mk('span','ico',icon); ic.style.setProperty('--h',hueVal);
+  const meta=mk('div','meta'); meta.append(mk('b','',title), mk('small','',sub));
+  const a=mk('span','amt num',amount); if(positivo) a.style.color='var(--in)';
+  r.append(ic,meta,a); return r;
+}
+function introStepsData(){
+  return [
+    { icon:'👋', title:'Bienvenido a Mis cuentas', desc:'Controla tus gastos, tarjetas, créditos y metas de ahorro, todo en un lugar. Esta introducción rápida te muestra cómo funciona cada parte — toma menos de un minuto.' },
+    { icon:'➕', hue:210, title:'Registrar', desc:'Anota un gasto o ingreso en segundos: el monto, la categoría y el medio de pago. Es la pantalla con la que se abre la app.',
+      example:()=>exMov(145,'🛒','Supermercado','Débito, Compra semanal','−$15.000') },
+    { icon:'📋', hue:190, title:'Lista', desc:'Todos tus movimientos ordenados por día, con buscador y filtros por categoría, medio de pago o monto.',
+      example:()=>{ const w=mk('div'); const r1=exMov(145,'🛒','Supermercado','Débito','−$15.000'); const r2=exMov(152,'💼','Sueldo','Transferencia','+$850.000',true); r2.style.borderTop='1px solid var(--line)'; w.append(r1,r2); return w; } },
+    { icon:'📅', hue:35, title:'Fijos', desc:'Tarjetas, créditos y suscripciones que se repiten cada mes. La app te avisa antes de que venzan y calcula tus cuotas.',
+      example:()=>{ const row=mk('div'); row.style.cssText='border-left:3px solid hsl(35 60% 55%);padding-left:10px'; row.append(mk('b','','Tarjeta Falabella'), document.createElement('br'), mk('small','','Factura, día 15 ')); row.appendChild(mk('span','pill soon','Vence en 3 días')); return row; } },
+    { icon:'🐷', hue:275, title:'Ahorro', desc:'Crea metas — un viaje, un fondo de emergencia — y la app calcula cuánto apartar cada mes para cumplirlas a tiempo.',
+      example:()=>{ const w=mk('div'); const t=mk('div','','✈️ Viaje a San Pedro'); t.style.fontWeight='600'; const bar=mk('div','cbar'); const s=mk('span'); s.style.width='27%'; bar.appendChild(s); w.append(t,bar,mk('small','','27% logrado · faltan $440.000')); return w; } },
+    { icon:'📊', hue:340, title:'Resumen', desc:'Presupuesto por categoría, tu patrimonio y gráficos de evolución de tus gastos mes a mes.',
+      example:()=>{ const w=mk('div'); const top=mk('div'); top.style.cssText='display:flex;justify-content:space-between;font-weight:600'; const dot=mk('span','catdot'); dot.style.setProperty('--h',145); const nm=mk('span'); nm.append(dot,document.createTextNode('🛒 Supermercado')); top.append(nm,mk('span','','$61.000')); const bar=mk('div','cbar'); const s=mk('span'); s.style.width='68%'; bar.appendChild(s); w.append(top,bar); return w; } },
+    { icon:'🔒', title:'Tus datos son solo tuyos', desc:'Todo se guarda en este dispositivo, nunca se comparte. Puedes descargar un respaldo cuando quieras desde Resumen → Datos.' }
+  ];
+}
+let introIdx=0;
+function renderIntroStep(){
+  const steps=introStepsData(); introIdx=Math.max(0,Math.min(introIdx,steps.length-1));
+  const s=steps[introIdx], body=$('#introBody'); body.innerHTML='';
+  if(s.hue!=null){ const ic=mk('span','intro-icn',s.icon); ic.style.setProperty('--h',s.hue); body.appendChild(ic); }
+  else { const ic=mk('div','',s.icon); ic.style.fontSize='2.4rem'; body.appendChild(ic); }
+  body.appendChild(mk('h2','intro-title',s.title));
+  body.appendChild(mk('p','intro-desc',s.desc));
+  if(s.example){ const ex=mk('div','intro-example'); ex.appendChild(mk('div','lbl','Así se ve')); ex.appendChild(s.example()); body.appendChild(ex); }
+  const dots=$('#introDots'); dots.innerHTML='';
+  steps.forEach((_,i)=>{ const d=mk('i'); if(i===introIdx) d.classList.add('on'); dots.appendChild(d); });
+  $('#introBack').hidden=introIdx===0;
+  $('#introSkip').hidden=introIdx===steps.length-1;
+  $('#introNext').textContent=introIdx===steps.length-1?'Empezar':'Siguiente';
+}
+function openIntro(){ introIdx=0; $('#introBg').hidden=false; renderIntroStep(); }
+function closeIntro(){ $('#introBg').hidden=true; lsSet('introSeen',true); }
+function maybeShowIntro(){ if(!lsGet('introSeen')) openIntro(); }
+$('#introNext').onclick=()=>{ const steps=introStepsData(); if(introIdx>=steps.length-1) closeIntro(); else { introIdx++; renderIntroStep(); } };
+$('#introBack').onclick=()=>{ introIdx--; renderIntroStep(); };
+$('#introSkip').onclick=closeIntro;
+$('#introReplay').onclick=openIntro;
+
 /* ================= Recordatorios (APK) ================= */
 const notifP = () => window.capacitorLocalNotifications && window.capacitorLocalNotifications.LocalNotifications;
 function renderRem(){
@@ -2182,7 +2254,7 @@ async function showLock(){
   });
   const bio = lc.bio && await bioAvailable(); $('#bioBtn').hidden=!bio; if(bio) tryBio();
 }
-function unlock(){ locked=false; pinBuf=''; $('#lock').hidden=true; }
+function unlock(){ locked=false; pinBuf=''; $('#lock').hidden=true; maybeShowIntro(); }
 $('#bioBtn').onclick=tryBio;
 document.addEventListener('visibilitychange',()=>{ if(document.hidden) hiddenAt=Date.now(); else if(hiddenAt && Date.now()-hiddenAt>60000 && !locked) showLock(); });
 async function renderLockBox(){
@@ -2631,6 +2703,7 @@ $('#mSave').onclick=async()=>{
   renderMIcons(); fillMCuenta(''); $('#dDesde').value=today();
   renderPForm(); renderAll(); renderSubnav('pend'); renderSubnav('sum'); updateSaveUi(); renderRem(); renderLockBox();
   showLock();
+  if(!locked) maybeShowIntro();
   if(STANDALONE){
     if(!isNative() && 'serviceWorker' in navigator && location.protocol!=='file:') navigator.serviceWorker.register('./sw.js').catch(()=>{});
     if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
