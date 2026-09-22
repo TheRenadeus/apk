@@ -35,10 +35,12 @@ const tags = [
 ].join('\n');
 
 let html = readFileSync('index.html', 'utf8');
-// En el APK no hay usd.json local: se lee el que actualiza GitHub en tu sitio publicado.
+// En el APK no hay usd.json ni usd-history.json locales: se leen los que actualiza GitHub en tu sitio publicado.
 const { homepage } = JSON.parse(readFileSync('package.json', 'utf8'));
 if (homepage && !homepage.includes('TU_USUARIO')) {
-  html = html.replace("const USD_JSON = 'usd.json';", `const USD_JSON = '${homepage.replace(/\/?$/, '/')}usd.json';`);
+  const base = homepage.replace(/\/?$/, '/');
+  html = html.replace("const USD_JSON = 'usd.json';", `const USD_JSON = '${base}usd.json';`);
+  html = html.replace("const USD_HIST_JSON = 'usd-history.json';", `const USD_HIST_JSON = '${base}usd-history.json';`);
 } else {
   console.warn('Aviso: define "homepage" en package.json con la dirección de tu GitHub Pages para que el APK lea el dólar diario.');
 }

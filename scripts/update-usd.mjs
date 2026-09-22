@@ -1,6 +1,7 @@
 // Consulta el dólar del día y lo guarda en usd.json, que la app lee al abrirse.
 // Primero usa el dólar observado del Banco Central (mindicador.cl); si falla, un tipo de cambio de mercado.
-import { writeFileSync } from 'node:fs';
+// También mantiene usd-history.json con un punto por día, para el gráfico de histórico de la app.
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 
 async function getJson(url) {
   const r = await fetch(url, { headers: { 'User-Agent': 'mis-cuentas' }, signal: AbortSignal.timeout(15000) });
@@ -23,3 +24,15 @@ try {
 out.actualizado = new Date().toISOString();
 writeFileSync('usd.json', JSON.stringify(out, null, 2) + '\n');
 console.log('Dólar guardado:', out.valor, out.fecha);
+
+const HIST_FILE = 'usd-history.json';
+let hist = [];
+if (existsSync(HIST_FILE)) {
+  try { hist = JSON.parse(readFileSync(HIST_FILE, 'utf8')); if (!Array.isArray(hist)) hist = []; } catch (e) { hist = []; }
+}
+hist = hist.filter(p => p.fecha !== out.fecha);
+hist.push({ fecha: out.fecha, valor: out.valor });
+hist.sort((a, b) => a.fecha.localeCompare(b.fecha));
+if (hist.length > 365) hist = hist.slice(hist.length - 365);
+writeFileSync(HIST_FILE, JSON.stringify(hist) + '\n');
+console.log('Histórico actualizado:', hist.length, 'días');

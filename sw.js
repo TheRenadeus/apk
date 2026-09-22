@@ -1,5 +1,5 @@
 // Cambia este número cada vez que publiques cambios, para que el teléfono tome la versión nueva.
-const CACHE = 'mis-cuentas-v6';
+const CACHE = 'mis-cuentas-v7';
 const APP = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png'];
 
 self.addEventListener('install', e => {
@@ -15,8 +15,9 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  // El dólar siempre se pide a internet, nunca a la copia guardada.
-  if (new URL(req.url).pathname.endsWith('usd.json')) return;
+  // El dólar y su histórico siempre se piden a internet, nunca a la copia guardada.
+  const p = new URL(req.url).pathname;
+  if (p.endsWith('usd.json') || p.endsWith('usd-history.json')) return;
   // Página: primero internet (para recibir actualizaciones), si no hay conexión usa la copia guardada.
   if (req.mode === 'navigate') {
     e.respondWith(fetch(req)
