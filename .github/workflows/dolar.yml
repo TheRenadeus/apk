@@ -1,0 +1,32 @@
+name: Actualizar dólar
+
+on:
+  schedule:
+    # Aproximado a las 10:30 y 19:30 hora de Chile (UTC-3), de lunes a viernes.
+    - cron: '30 13 * * 1-5'
+    - cron: '30 22 * * 1-5'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Consultar y guardar el dólar
+        run: node scripts/update-usd.mjs
+
+      - name: Subir cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add usd.json usd-history.json
+          git diff --cached --quiet || git commit -m "Actualizar dólar del día"
+          git push
