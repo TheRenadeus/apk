@@ -83,6 +83,7 @@ label.f{display:block;font-size:.9rem;color:var(--muted);margin:14px 0 6px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:.95rem}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.add{border-style:dashed;color:var(--accent);border-color:var(--accent)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .txt{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px;min-height:46px}
 .btn{width:100%;margin-top:18px;border:0;border-radius:12px;padding:15px;font-weight:600;font-size:1.05rem;cursor:pointer;background:var(--accent);color:#fff}
@@ -511,6 +512,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <div id="gFields">
         <label class="f">Categoría</label>
         <div class="chips" id="catChips"></div>
+        <div class="addcat" id="catQuickAdd" hidden><input class="txt" id="qNewCat" maxlength="30" placeholder="Nombre de la categoría"><button id="qNewCatBtn">Agregar</button></div>
         <label class="f">Medio de pago</label>
         <div class="chips" id="medioChips"></div>
       </div>
@@ -843,16 +845,16 @@ function armDelete(btn, label, onConfirm){
   };
 }
 
-const EMO={'Arriendo / dividendo':'🏠','Supermercado':'🛒','Transporte':'🚌','Cuentas básicas':'💡','Salud':'🩺','Comida fuera':'🍽️','Créditos y deudas':'🏦','Suscripciones':'📺','Ocio':'🎮','Educación':'📚','Otros':'📦','Sueldo':'💼','Ayudantía':'🎓','Freelance':'💻','Otros ingresos':'➕','Tarjeta de crédito':'💳','Ahorro':'🐷'};
+const EMO={'Arriendo / dividendo':'🏠','Supermercado':'🛒','Transporte':'🚌','Cuentas básicas':'💡','Salud':'🩺','Comida fuera':'🍽️','Ropa':'👕','Mascotas':'🐾','Hogar':'🛋️','Regalos':'🎁','Créditos y deudas':'🏦','Suscripciones':'📺','Ocio':'🎮','Educación':'📚','Otros':'📦','Sueldo':'💼','Ayudantía':'🎓','Freelance':'💻','Bono':'💵','Arriendo recibido':'🏘️','Otros ingresos':'➕','Tarjeta de crédito':'💳','Ahorro':'🐷'};
 const emo = c => EMO[c] || '🏷️';
-const CAT_HUE={'Arriendo / dividendo':210,'Supermercado':145,'Transporte':28,'Cuentas básicas':48,'Salud':350,'Comida fuera':18,'Créditos y deudas':265,'Suscripciones':285,'Ocio':320,'Educación':198,'Otros':0,'Sueldo':152,'Ayudantía':168,'Freelance':232,'Otros ingresos':118,'Tarjeta de crédito':8,'Ahorro':330};
+const CAT_HUE={'Arriendo / dividendo':210,'Supermercado':145,'Transporte':28,'Cuentas básicas':48,'Salud':350,'Comida fuera':18,'Ropa':300,'Mascotas':95,'Hogar':40,'Regalos':355,'Créditos y deudas':265,'Suscripciones':285,'Ocio':320,'Educación':198,'Otros':0,'Sueldo':152,'Ayudantía':168,'Freelance':232,'Bono':130,'Arriendo recibido':205,'Otros ingresos':118,'Tarjeta de crédito':8,'Ahorro':330};
 function hue(s){ if(s==null) return 210; if(CAT_HUE[s]!=null) return CAT_HUE[s]; let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))%360; return h; }
 
 /* ================= Estado ================= */
 const DEF = {
   cats:{
-    gasto:['Arriendo / dividendo','Supermercado','Transporte','Cuentas básicas','Salud','Comida fuera','Créditos y deudas','Suscripciones','Ocio','Educación','Otros'],
-    ingreso:['Sueldo','Ayudantía','Freelance','Otros ingresos']
+    gasto:['Arriendo / dividendo','Supermercado','Transporte','Cuentas básicas','Salud','Comida fuera','Ropa','Mascotas','Hogar','Regalos','Créditos y deudas','Suscripciones','Ocio','Educación','Otros'],
+    ingreso:['Sueldo','Freelance','Bono','Arriendo recibido','Otros ingresos']
   },
   budget:{}, budgetMes:{}, pendientes:[], diarios:[], compras:[], cuentas:[], metas:[], favs:[], prestamos:[],
   usd:{valor:0, fecha:'', fuente:''}, guia:{oculta:false, skip:{}}, rem:{on:false, hora:'20:00', antes:2}, tema:{h:210}
@@ -915,6 +917,8 @@ function migrate(c){
   c.tema=c.tema||{h:210};
   c.diarios.forEach(g=>{ if(!g.desde) g.desde=today(); });
   if(!c.cats.gasto.includes('Créditos y deudas')) c.cats.gasto.splice(Math.max(0,c.cats.gasto.length-1),0,'Créditos y deudas');
+  ['Ropa','Mascotas','Hogar','Regalos'].forEach(cat=>{ if(!c.cats.gasto.includes(cat)) c.cats.gasto.splice(Math.max(0,c.cats.gasto.length-1),0,cat); });
+  ['Bono','Arriendo recibido'].forEach(cat=>{ if(!c.cats.ingreso.includes(cat)) c.cats.ingreso.splice(Math.max(0,c.cats.ingreso.length-1),0,cat); });
   c.pendientes.forEach(p=>{ if(p.tipo==='consumo' && !p.cuotas) p.cuotas={}; });
   return c;
 }
@@ -1315,6 +1319,10 @@ function renderForm(){
     const cats=config.cats[tipo]; if(!cats.includes(selCat)) selCat=null;
     const cc=$('#catChips'); cc.innerHTML='';
     cats.forEach(c=>{ const b=mk('button','chip'); const em=mk('span','em',emo(c)); em.style.setProperty('--h',hue(c)); b.append(em, document.createTextNode(c)); b.setAttribute('aria-pressed', c===selCat); b.onclick=()=>{ selCat=c; renderForm(); }; cc.appendChild(b); });
+    const addBtn=mk('button','chip add','＋ Nueva categoría'); addBtn.type='button';
+    addBtn.onclick=()=>{ $('#catQuickAdd').hidden=false; addBtn.hidden=true; $('#qNewCat').focus(); };
+    cc.appendChild(addBtn);
+    $('#catQuickAdd').hidden=true;
     const ms=medios(tipo); if(!ms.some(x=>x.key===medio)) medio=defMedio(tipo);
     const mc=$('#medioChips'); mc.innerHTML='';
     ms.forEach(x=>{ const b=mk('button','chip',(x.card?'💳 ':'')+x.label); b.setAttribute('aria-pressed', x.key===medio); b.onclick=()=>{ medio=x.key; renderForm(); }; mc.appendChild(b); });
@@ -2419,13 +2427,17 @@ $('#fab').onclick=()=>{ showView('add'); $('#monto').focus(); };
 document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>showView(t.dataset.view));
 $('#dueBar').onclick=()=>showSub('pend','pagos');
 $('#projBtn').onclick=()=>{ showProj=!showProj; renderProj(); };
-function addCat(input,kind){
+function addCat(input,kind,select){
   const v=input.value.trim(); if(!v) return;
   if(config.cats[kind].some(c=>c.toLowerCase()===v.toLowerCase())){ toast('Esa categoría ya existe'); return; }
-  config.cats[kind].push(v); input.value=''; renderAll(); saveConfig(); toast('Categoría agregada');
+  config.cats[kind].push(v); input.value='';
+  if(select && kind===tipo) selCat=v;
+  renderAll(); saveConfig(); toast('Categoría agregada');
 }
 $('#addCatBtn').onclick=()=>addCat($('#newCat'),'gasto');
 $('#addInCatBtn').onclick=()=>addCat($('#newInCat'),'ingreso');
+$('#qNewCatBtn').onclick=()=>addCat($('#qNewCat'),tipo,true);
+$('#qNewCat').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addCat($('#qNewCat'),tipo,true); } });
 $('#exportBtn').onclick=()=>{ const rows=[CSV_HEAD].concat([...lastShown].sort((a,b)=>a.fecha.localeCompare(b.fecha)).map(csvRow)); saveFile('finanzas-'+(filt.todos?'todos':month)+(activeCount()>(filt.todos?1:0)?'-filtrado':'')+'.csv', csvOf(rows)); };
 $('#exportAll').onclick=async()=>{
   await flushSave(); toast('Preparando historial…');
