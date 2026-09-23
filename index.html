@@ -453,6 +453,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .intro-dots i{width:7px;height:7px;border-radius:50%;background:var(--line);display:block}
 .intro-dots i.on{background:var(--accent);width:18px;border-radius:4px}
 .intro-nav{display:flex;align-items:center;gap:10px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
@@ -525,7 +526,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <div id="gFields">
         <label class="f">Categoría</label>
         <div class="chips" id="catChips"></div>
-        <div class="addcat" id="catQuickAdd" hidden><input class="txt" id="qNewCat" maxlength="30" placeholder="Nombre de la categoría"><button id="qNewCatBtn">Agregar</button></div>
+        <div class="addcat" id="catQuickAdd" hidden><label class="sr-only" for="qNewCat">Nombre de la categoría</label><input class="txt" id="qNewCat" maxlength="30" placeholder="Nombre de la categoría"><button id="qNewCatBtn">Agregar</button></div>
         <label class="f">Medio de pago</label>
         <div class="chips" id="medioChips"></div>
       </div>
@@ -714,7 +715,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       </div>
       <div id="budList"></div>
       <div class="tot"><span>Total</span><span class="num" id="budTot"></span></div>
-      <div class="addcat"><input class="txt" id="newCat" placeholder="Nueva categoría de gasto" maxlength="30"><button id="addCatBtn">Agregar</button></div>
+      <div class="addcat"><label class="sr-only" for="newCat">Nueva categoría de gasto</label><input class="txt" id="newCat" placeholder="Nueva categoría de gasto" maxlength="30"><button id="addCatBtn">Agregar</button></div>
       <p class="note" id="budNote">Toca el monto para editarlo.</p>
     </div>
     <div class="panel" data-sec="bud">
@@ -724,7 +725,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
     <div class="panel" data-sec="bud">
       <h2>Ingresos por categoría</h2>
       <div id="inList"></div>
-      <div class="addcat"><input class="txt" id="newInCat" placeholder="Nueva categoría de ingreso" maxlength="30"><button id="addInCatBtn">Agregar</button></div>
+      <div class="addcat"><label class="sr-only" for="newInCat">Nueva categoría de ingreso</label><input class="txt" id="newInCat" placeholder="Nueva categoría de ingreso" maxlength="30"><button id="addInCatBtn">Agregar</button></div>
     </div>
     <div class="panel" data-sec="patri">
       <h2>Patrimonio</h2>
@@ -733,7 +734,9 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <div id="acctList"></div>
       <button class="linkbtn" id="aToggle">+ Agregar cuenta</button>
       <div class="addcat" id="aForm" hidden>
+        <label class="sr-only" for="aNombre">Nombre de la cuenta</label>
         <input class="txt" id="aNombre" placeholder="Nombre de la cuenta" maxlength="30">
+        <label class="sr-only" for="aSaldo">Saldo actual</label>
         <input class="txt num" id="aSaldo" inputmode="numeric" placeholder="Saldo actual" style="max-width:130px">
         <button id="aAdd">Agregar</button>
       </div>
@@ -777,6 +780,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <button class="btn ghost" id="installBtn" hidden>Instalar la app en este dispositivo</button>
       <h3 class="sub3">Moneda</h3>
       <p class="note" style="margin-top:0" id="monedaNote">Elegida según tu idioma y país. Cámbiala si no es la correcta.</p>
+      <label class="sr-only" for="monedaSel">Moneda</label>
       <select class="txt" id="monedaSel"></select>
       <h3 class="sub3">Apariencia</h3>
       <p class="note" style="margin-top:0">Elige el color de acento de la app.</p>
