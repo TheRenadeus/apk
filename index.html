@@ -775,6 +775,9 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <p class="note" id="bkInfo" style="margin-top:0"></p>
       <button class="linkbtn" id="introReplay" style="padding:0">Ver la introducción de nuevo</button>
       <button class="btn ghost" id="installBtn" hidden>Instalar la app en este dispositivo</button>
+      <h3 class="sub3">Moneda</h3>
+      <p class="note" style="margin-top:0" id="monedaNote">Elegida según tu idioma y país. Cámbiala si no es la correcta.</p>
+      <select class="txt" id="monedaSel"></select>
       <h3 class="sub3">Apariencia</h3>
       <p class="note" style="margin-top:0">Elige el color de acento de la app.</p>
       <div class="swatches" id="accentSwatches" role="group" aria-label="Color de acento"></div>
@@ -850,7 +853,7 @@ const mk = (tag, cls, txt) => { const e=document.createElement(tag); if(cls) e.c
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const clone = o => JSON.parse(JSON.stringify(o));
-const fmt = n => (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString('es-CL');
+const fmt = n => (n < 0 ? '-'+config.moneda.simbolo : config.moneda.simbolo) + Math.abs(Math.round(n)).toLocaleString(config.moneda.locale);
 const parseAmt = s => parseInt(String(s).replace(/\D/g,''), 10) || 0;
 const pad = n => String(n).padStart(2,'0');
 const today = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
@@ -862,7 +865,7 @@ const newId = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6
 const monthName = ym => { const [y,m]=ym.split('-').map(Number); return MESES[m-1].toLowerCase()+(String(y)!==today().slice(0,4)?' '+y:''); };
 const monthShort = ym => { const [y,m]=ym.split('-').map(Number); return MESES[m-1].slice(0,3)+' '+String(y).slice(2); };
 function fmtDate(s){ const [y,m,d]=s.split('-').map(Number); return d+' de '+MESES[m-1].toLowerCase()+(String(y)!==today().slice(0,4)?' de '+y:''); }
-const moneyInput = inp => inp.addEventListener('input',()=>{ const v=parseAmt(inp.value); inp.value=v?v.toLocaleString('es-CL'):''; });
+const moneyInput = inp => inp.addEventListener('input',()=>{ const v=parseAmt(inp.value); inp.value=v?v.toLocaleString(config.moneda.locale):''; });
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 function armDelete(btn, label, onConfirm){
   btn.onclick=async()=>{
@@ -876,6 +879,41 @@ const emo = c => EMO[c] || '🏷️';
 const CAT_HUE={'Arriendo / dividendo':210,'Supermercado':145,'Transporte':28,'Cuentas básicas':48,'Salud':350,'Comida fuera':18,'Ropa':300,'Mascotas':95,'Hogar':40,'Regalos':355,'Créditos y deudas':265,'Suscripciones':285,'Ocio':320,'Educación':198,'Otros':0,'Sueldo':152,'Ayudantía':168,'Freelance':232,'Bono':130,'Arriendo recibido':205,'Otros ingresos':118,'Tarjeta de crédito':8,'Ahorro':330};
 function hue(s){ if(s==null) return 210; if(CAT_HUE[s]!=null) return CAT_HUE[s]; let h=0; for(const ch of String(s)) h=(h*31+ch.charCodeAt(0))%360; return h; }
 
+/* ================= Moneda regional ================= */
+const MONEDAS = {
+  CL:{codigo:'CLP',simbolo:'$',locale:'es-CL',nombre:'Peso chileno'},
+  AR:{codigo:'ARS',simbolo:'$',locale:'es-AR',nombre:'Peso argentino'},
+  MX:{codigo:'MXN',simbolo:'$',locale:'es-MX',nombre:'Peso mexicano'},
+  CO:{codigo:'COP',simbolo:'$',locale:'es-CO',nombre:'Peso colombiano'},
+  PE:{codigo:'PEN',simbolo:'S/',locale:'es-PE',nombre:'Sol peruano'},
+  UY:{codigo:'UYU',simbolo:'$',locale:'es-UY',nombre:'Peso uruguayo'},
+  BO:{codigo:'BOB',simbolo:'Bs',locale:'es-BO',nombre:'Boliviano'},
+  PY:{codigo:'PYG',simbolo:'₲',locale:'es-PY',nombre:'Guaraní'},
+  VE:{codigo:'VES',simbolo:'Bs',locale:'es-VE',nombre:'Bolívar'},
+  CR:{codigo:'CRC',simbolo:'₡',locale:'es-CR',nombre:'Colón costarricense'},
+  GT:{codigo:'GTQ',simbolo:'Q',locale:'es-GT',nombre:'Quetzal'},
+  HN:{codigo:'HNL',simbolo:'L',locale:'es-HN',nombre:'Lempira'},
+  NI:{codigo:'NIO',simbolo:'C$',locale:'es-NI',nombre:'Córdoba'},
+  DO:{codigo:'DOP',simbolo:'RD$',locale:'es-DO',nombre:'Peso dominicano'},
+  PA:{codigo:'USD',simbolo:'$',locale:'es-PA',nombre:'Dólar (Panamá)'},
+  EC:{codigo:'USD',simbolo:'$',locale:'es-EC',nombre:'Dólar (Ecuador)'},
+  SV:{codigo:'USD',simbolo:'$',locale:'es-SV',nombre:'Dólar (El Salvador)'},
+  ES:{codigo:'EUR',simbolo:'€',locale:'es-ES',nombre:'Euro'},
+  US:{codigo:'USD',simbolo:'$',locale:'en-US',nombre:'Dólar estadounidense'},
+  BR:{codigo:'BRL',simbolo:'R$',locale:'pt-BR',nombre:'Real brasileño'},
+  GB:{codigo:'GBP',simbolo:'£',locale:'en-GB',nombre:'Libra esterlina'},
+  CA:{codigo:'CAD',simbolo:'$',locale:'en-CA',nombre:'Dólar canadiense'},
+};
+Object.entries(MONEDAS).forEach(([k,v])=>v.region=k);
+const MONEDA_DEF = MONEDAS.CL;
+function detectCurrency(){
+  try{
+    const langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language||''];
+    for(const l of langs){ const region=String(l).split('-')[1]; if(region && MONEDAS[region.toUpperCase()]) return MONEDAS[region.toUpperCase()]; }
+  }catch(e){}
+  return MONEDA_DEF;
+}
+
 /* ================= Estado ================= */
 const DEF = {
   cats:{
@@ -883,7 +921,7 @@ const DEF = {
     ingreso:['Sueldo','Freelance','Bono','Arriendo recibido','Otros ingresos']
   },
   budget:{}, budgetMes:{}, pendientes:[], diarios:[], compras:[], cuentas:[], metas:[], favs:[], prestamos:[],
-  usd:{valor:0, fecha:'', fuente:''}, guia:{oculta:false, skip:{}}, rem:{on:false, hora:'20:00', antes:2}, tema:{h:210}
+  usd:{valor:0, fecha:'', fuente:''}, guia:{oculta:false, skip:{}}, rem:{on:false, hora:'20:00', antes:2}, tema:{h:210}, moneda:MONEDA_DEF
 };
 let config = clone(DEF);
 let month = curMonth();
@@ -941,6 +979,7 @@ function migrate(c){
   c.usd=c.usd||{valor:0,fecha:'',fuente:''}; c.guia=c.guia||{oculta:false,skip:{}}; c.guia.skip=c.guia.skip||{};
   c.rem=c.rem||{on:false,hora:'20:00',antes:2};
   c.tema=c.tema||{h:210};
+  c.moneda=c.moneda||MONEDA_DEF;
   c.diarios.forEach(g=>{ if(!g.desde) g.desde=today(); });
   if(!c.cats.gasto.includes('Créditos y deudas')) c.cats.gasto.splice(Math.max(0,c.cats.gasto.length-1),0,'Créditos y deudas');
   ['Ropa','Mascotas','Hogar','Regalos'].forEach(cat=>{ if(!c.cats.gasto.includes(cat)) c.cats.gasto.splice(Math.max(0,c.cats.gasto.length-1),0,cat); });
@@ -1009,15 +1048,24 @@ function renderAccent(){
     el.appendChild(b);
   });
 }
+function renderMoneda(){
+  const opts=Object.values(MONEDAS).sort((a,b)=>a.nombre.localeCompare(b.nombre)).map(m=>({key:m.region,label:m.nombre+' ('+m.codigo+')'}));
+  fillSelect($('#monedaSel'), opts, config.moneda.region);
+}
+$('#monedaSel').addEventListener('change',async e=>{
+  config.moneda=MONEDAS[e.target.value]||MONEDA_DEF;
+  document.querySelectorAll('[placeholder="$0"]').forEach(i=>i.placeholder=config.moneda.simbolo+'0');
+  renderAll(); await saveConfig(); toast('Moneda actualizada a '+config.moneda.nombre);
+});
 
 /* ================= Dólar ================= */
 // Archivo que actualiza cada día la tarea de GitHub (.github/workflows/dolar.yml)
 const USD_JSON = 'usd.json';
 const usdRate = () => (config.usd && config.usd.valor) || 0;
 const parseUsd = s => { const t=String(s).replace(/[^\d.,]/g,''); if(!t) return 0; const n=t.includes(',')? t.replace(/\./g,'').replace(',','.') : t; return Math.round(parseFloat(n)*100)/100 || 0; };
-const fmtUsd = n => 'US$'+Number(n).toLocaleString('es-CL',{maximumFractionDigits:2});
+const fmtUsd = n => 'US$'+Number(n).toLocaleString(config.moneda.locale,{maximumFractionDigits:2});
 const toClp = usd => Math.round(usd*usdRate());
-const fmtRate = v => '$'+Number(v).toLocaleString('es-CL',{minimumFractionDigits:v%1?2:0, maximumFractionDigits:2});
+const fmtRate = v => config.moneda.simbolo+Number(v).toLocaleString(config.moneda.locale,{minimumFractionDigits:v%1?2:0, maximumFractionDigits:2});
 const recMonto = p => (p.usd && usdRate()) ? toClp(p.usd) : p.monto;
 async function fetchJson(url){ const c=new AbortController(); const t=setTimeout(()=>c.abort(),8000); try{ const r=await fetch(url,{signal:c.signal, cache:'no-store'}); if(!r.ok) throw new Error(r.status); return await r.json(); } finally{ clearTimeout(t); } }
 async function updateUsd(force){
@@ -1234,7 +1282,7 @@ async function renderRecSuggest(){
       showSub('pend','nuevo'); pTipo='sub';
       document.querySelectorAll('[data-pt]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.pt==='sub'));
       renderPForm();
-      $('#pNombre').value=x.nota; $('#pMonto').value=x.monto.toLocaleString('es-CL'); $('#pDia').value=String(new Date().getDate());
+      $('#pNombre').value=x.nota; $('#pMonto').value=x.monto.toLocaleString(config.moneda.locale); $('#pDia').value=String(new Date().getDate());
       if(x.medio) $('#pMedio').value=x.medio;
       $('#pNombre').focus();
     };
@@ -1360,7 +1408,7 @@ function renderForm(){
   }
   const isCard=!isT && !!medioInfo(medio).card && tipo==='gasto';
   $('#cuotasRow').hidden=!isCard; if(!isCard) $('#cuotasN').value='1';
-  $('#usdBtn').setAttribute('aria-pressed', usdMode); $('#curSym').textContent=usdMode?'US$':'$'; $('#monto').inputMode=usdMode?'decimal':'numeric';
+  $('#usdBtn').setAttribute('aria-pressed', usdMode); $('#curSym').textContent=usdMode?'US$':config.moneda.simbolo; $('#monto').inputMode=usdMode?'decimal':'numeric';
   renderFavs(); validate();
 }
 function medioHint(){
@@ -1440,8 +1488,8 @@ function renderFilters(src){
   const meds=[...new Set([...list.map(m=>m.medio), filt.medio])].filter(Boolean).sort();
   fillSelect($('#fMedio'), [{key:'',label:'Todos'}, ...meds.map(c=>({key:c,label:c}))], filt.medio);
   $('#fOrigen').value=filt.origen; $('#fOrden').value=filt.orden; $('#fDesde').value=filt.desde; $('#fHasta').value=filt.hasta;
-  if(document.activeElement!==$('#fMin')) $('#fMin').value=filt.min?filt.min.toLocaleString('es-CL'):'';
-  if(document.activeElement!==$('#fMax')) $('#fMax').value=filt.max?filt.max.toLocaleString('es-CL'):'';
+  if(document.activeElement!==$('#fMin')) $('#fMin').value=filt.min?filt.min.toLocaleString(config.moneda.locale):'';
+  if(document.activeElement!==$('#fMax')) $('#fMax').value=filt.max?filt.max.toLocaleString(config.moneda.locale):'';
   if(document.activeElement!==$('#fQ')) $('#fQ').value=filt.q;
   // filtros activos como etiquetas que se pueden quitar
   const act=$('#fActive'); act.innerHTML=''; const pills=[];
@@ -1549,7 +1597,7 @@ async function renderList(){
 }
 function closeSheet(){ $('#sheetBg').hidden=true; $('#sheet').innerHTML=''; }
 function field(label, input){ const w=mk('div'); const l=mk('label','f',label); w.append(l,input); return w; }
-function moneyField(value){ const i=mk('input','txt num'); i.inputMode='numeric'; i.value=value?value.toLocaleString('es-CL'):''; moneyInput(i); return i; }
+function moneyField(value){ const i=mk('input','txt num'); i.inputMode='numeric'; i.value=value?value.toLocaleString(config.moneda.locale):''; moneyInput(i); return i; }
 async function deleteMov(m){
   fx(m,-1);
   movs=movs.filter(x=>x.id!==m.id);
@@ -1709,9 +1757,9 @@ function renderPend(){
       u.onclick=async()=>{ const pm=movs.find(m=>m.id===pagos[p.id].movId); if(pm) fx(pm,-1); movs=movs.filter(m=>m.id!==pagos[p.id].movId); delete pagos[p.id]; renderAll(); await saveMonth(); toast('Pago deshecho'); };
       acts.appendChild(u);
     } else {
-      const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Monto pagado'); inp.value=p.monto.toLocaleString('es-CL'); moneyInput(inp);
+      const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Monto pagado'); inp.value=p.monto.toLocaleString(config.moneda.locale); moneyInput(inp);
       inp.addEventListener('input',()=>{ inp.dataset.t='1'; });
-      if(p.tipo==='tarjeta' && p.cierre) calcFactura(p,month).then(f=>{ if(!inp.dataset.t) inp.value=f.total?f.total.toLocaleString('es-CL'):''; amt.textContent=fmt(f.total); renderProj(); });
+      if(p.tipo==='tarjeta' && p.cierre) calcFactura(p,month).then(f=>{ if(!inp.dataset.t) inp.value=f.total?f.total.toLocaleString(config.moneda.locale):''; amt.textContent=fmt(f.total); renderProj(); });
       const b=mk('button','sbtn pri','Marcar pagado');
       b.onclick=async()=>{
         const monto=parseAmt(inp.value); if(!monto){ toast('Ingresa el monto pagado'); return; }
@@ -1797,7 +1845,7 @@ function buildGrid(p){
     const ks=[...sel.set].sort((a,b)=>a-b), n=ks.length, bar=mk('div','selbar'), acts=mk('div','acts');
     if(sel.mode==='pay'){
       bar.appendChild(mk('p','',(n===1?'Cuota ':'Cuotas ')+ks.join(', ')+'. Total '+fmt(n*p.monto)+'.'));
-      const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Monto pagado'); inp.value=(n*p.monto).toLocaleString('es-CL'); moneyInput(inp);
+      const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Monto pagado'); inp.value=(n*p.monto).toLocaleString(config.moneda.locale); moneyInput(inp);
       const b1=mk('button','sbtn pri','Registrar pago hoy');
       b1.onclick=async()=>{ const monto=parseAmt(inp.value); if(!monto){ toast('Ingresa el monto pagado'); return; } clearSel(); await payCuotas(p,ks,monto); renderAll(); toast(n===1?'Cuota pagada':n+' cuotas pagadas'); };
       const b2=mk('button','sbtn','Ya estaban pagadas');
@@ -1878,9 +1926,9 @@ function renderPForm(){
 function resetPForm(){ editingId=null; ['#pNombre','#pMonto','#pDia','#pTotal','#pYa','#pInicio','#pCupo','#pDeuda','#pCierre','#pUsd'].forEach(s=>$(s).value=''); $('#pMoneda').value='CLP'; $('#pMedio').value=''; $('#pCat').value=''; $('#pExcl').checked=true; renderPForm(); }
 function editPend(p){
   editingId=p.id; pTipo=p.tipo; showSub('pend','nuevo');
-  $('#pNombre').value=p.nombre; $('#pMonto').value=p.monto.toLocaleString('es-CL'); $('#pDia').value=p.dia;
+  $('#pNombre').value=p.nombre; $('#pMonto').value=p.monto.toLocaleString(config.moneda.locale); $('#pDia').value=p.dia;
   if(p.tipo==='consumo'){ $('#pTotal').value=p.total; $('#pInicio').value=p.inicio; }
-  if(p.tipo==='tarjeta'){ $('#pCupo').value=p.cupo?p.cupo.toLocaleString('es-CL'):''; $('#pDeuda').value=p.deuda?p.deuda.toLocaleString('es-CL'):''; $('#pCierre').value=p.cierre||''; }
+  if(p.tipo==='tarjeta'){ $('#pCupo').value=p.cupo?p.cupo.toLocaleString(config.moneda.locale):''; $('#pDeuda').value=p.deuda?p.deuda.toLocaleString(config.moneda.locale):''; $('#pCierre').value=p.cierre||''; }
   $('#pMoneda').value=p.usd?'USD':'CLP'; $('#pUsd').value=p.usd?String(p.usd).replace('.',','):'';
   $('#pExcl').checked=p.excl!==false;
   $('#pMedio').value=''; renderPForm();
@@ -1902,9 +1950,9 @@ function renderBudget(){
     const pct=b?Math.min(100,s/b*100):(s?100:0), cls=!b?(s?'x':''):s>b?'x':s>=b*0.8?'w':'';
     const row=mk('div','bud'); const top=mk('div','top'); const nm=mk('b'); const dot=mk('span','catdot'); dot.style.setProperty('--h',hue(c)); nm.append(dot, document.createTextNode(emo(c)+'  '+c)); if(ov[c]!==undefined) nm.appendChild(mk('span','tagb','solo este mes')); top.append(nm, mk('span','num',fmt(s)));
     const bar=mk('div','bar'); const bs=mk('span'); bs.style.width=pct+'%'; if(cls) bs.classList.add(cls); bar.appendChild(bs);
-    const sub=mk('div','sub'); const inp=mk('input'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Presupuesto '+c); inp.placeholder=budMode==='mes'&&config.budget[c]?config.budget[c].toLocaleString('es-CL'):'$0';
+    const sub=mk('div','sub'); const inp=mk('input'); inp.inputMode='numeric'; inp.setAttribute('aria-label','Presupuesto '+c); inp.placeholder=budMode==='mes'&&config.budget[c]?config.budget[c].toLocaleString(config.moneda.locale):'$0';
     const iv = budMode==='all' ? (config.budget[c]||0) : (ov[c]!==undefined?ov[c]:0);
-    inp.value = budMode==='mes' && ov[c]===undefined ? '' : (iv?iv.toLocaleString('es-CL'):(budMode==='mes'?'0':'')); moneyInput(inp);
+    inp.value = budMode==='mes' && ov[c]===undefined ? '' : (iv?iv.toLocaleString(config.moneda.locale):(budMode==='mes'?'0':'')); moneyInput(inp);
     inp.onchange=async()=>{
       const raw=inp.value.trim(), v=parseAmt(raw);
       if(budMode==='all'){ if(v) config.budget[c]=v; else delete config.budget[c]; }
@@ -2038,7 +2086,7 @@ function openDForm(show){ $('#dForm').hidden=!show; $('#dAddToggle').hidden=show
 function resetDForm(){ dEditing=null; dDiasSel=[1,2,3,4,5]; ['#dNombre','#dPrecio','#dUsos'].forEach(s=>$(s).value=''); $('#dDesde').value=today(); $('#dCat').value=''; $('#dMedio').value=''; renderDForm(); openDForm(false); }
 function editDiario(g){
   dEditing=g.id; dDiasSel=[...g.dias];
-  $('#dNombre').value=g.nombre; $('#dPrecio').value=g.precio.toLocaleString('es-CL'); $('#dUsos').value=g.usos; $('#dDesde').value=g.desde||today();
+  $('#dNombre').value=g.nombre; $('#dPrecio').value=g.precio.toLocaleString(config.moneda.locale); $('#dUsos').value=g.usos; $('#dDesde').value=g.desde||today();
   $('#dCat').value=''; $('#dMedio').value=''; renderDForm(); $('#dCat').value=g.cat; $('#dMedio').value=g.medio; openDForm(true);
   $('#dFormTitle').scrollIntoView({behavior:'smooth',block:'start'});
 }
@@ -2335,7 +2383,7 @@ function renderMetas(){
     const meses=Math.max(1, mIdx(g.fecha)-mIdx(curMonth())+1);
     const txt = falta===0 ? '¡Meta cumplida! 🎉' : mIdx(g.fecha)<mIdx(curMonth()) ? 'La fecha ya pasó. Faltan '+fmt(falta)+'; edita la fecha para recalcular.' : Math.round(pct)+'% logrado. Faltan '+fmt(falta)+': aparta '+fmt(mm)+' al mes durante '+meses+(meses===1?' mes.':' meses.');
     const acts=mk('div','acts');
-    const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.placeholder='Monto'; inp.setAttribute('aria-label','Monto para '+g.nombre); if(mm) inp.value=mm.toLocaleString('es-CL'); moneyInput(inp);
+    const inp=mk('input','payin num'); inp.inputMode='numeric'; inp.placeholder='Monto'; inp.setAttribute('aria-label','Monto para '+g.nombre); if(mm) inp.value=mm.toLocaleString(config.moneda.locale); moneyInput(inp);
     const mov=async(sign)=>{ const v=parseAmt(inp.value); if(!v){ toast('Ingresa el monto'); return; }
       if(sign<0 && v>(g.ahorrado||0)){ toast('No puedes retirar más de lo ahorrado ('+fmt(g.ahorrado||0)+')'); return; }
       const m={ id:newId(), tipo:'ahorro', monto:sign*v, cat:'Ahorro', medio:'Ahorro', fecha:defaultDate(), nota:(sign>0?'Aporte a ':'Retiro de ')+g.nombre, metaId:g.id };
@@ -2356,7 +2404,7 @@ function fillMCuenta(v){ fillSelect($('#mCuenta'), [{key:'',label:'No descontar 
 let mEditing=null;
 function openMForm(show){ $('#mForm').hidden=!show; $('#mToggle').hidden=show; }
 function resetMForm(){ mEditing=null; mIcon='🎯'; ['#mNombre','#mObj','#mYa'].forEach(s=>$(s).value=''); $('#mFecha').value=idxToYm(mIdx(curMonth())+11); renderMIcons(); fillMCuenta(''); openMForm(false); }
-function editMeta(g){ mEditing=g.id; mIcon=g.icono||'🎯'; renderMIcons(); fillMCuenta(g.cuenta); $('#mNombre').value=g.nombre; $('#mObj').value=g.objetivo.toLocaleString('es-CL'); $('#mYa').value=(g.ahorrado||0).toLocaleString('es-CL'); $('#mFecha').value=g.fecha; openMForm(true); $('#mNombre').focus(); }
+function editMeta(g){ mEditing=g.id; mIcon=g.icono||'🎯'; renderMIcons(); fillMCuenta(g.cuenta); $('#mNombre').value=g.nombre; $('#mObj').value=g.objetivo.toLocaleString(config.moneda.locale); $('#mYa').value=(g.ahorrado||0).toLocaleString(config.moneda.locale); $('#mFecha').value=g.fecha; openMForm(true); $('#mNombre').focus(); }
 
 /* ================= Resumen: evolución ================= */
 async function monthData(ym){ const d=ym===month?{movs}:(await loadOther(ym)); return (d.movs||[]).concat(virtualFor(ym)); }
@@ -2492,7 +2540,7 @@ $('#tTo').addEventListener('change',e=>{ trTo=e.target.value; validate(); });
 $('#usdBtn').onclick=()=>{ usdMode=!usdMode; $('#monto').value=''; renderForm(); $('#monto').focus(); };
 $('#favEdit').onclick=()=>{ favEditing=!favEditing; renderFavs(); };
 $('#favSave').onclick=async()=>{ const a=formAmount(); if(!a || !selCat){ toast('Completa monto y categoría para guardarlo como favorito'); return; } const nombre=$('#nota').value.trim()||selCat; config.favs.push({id:newId(), nombre, tipo, monto:a, cat:selCat, medio}); renderFavs(); await saveConfig(); toast('Favorito guardado: '+nombre); };
-$('#monto').addEventListener('input',()=>{ const inp=$('#monto'); if(usdMode){ inp.value=inp.value.replace(/[^\d,]/g,'').replace(/,(?=.*,)/g,''); } else { const v=parseAmt(inp.value); inp.value=v?v.toLocaleString('es-CL'):''; } validate(); });
+$('#monto').addEventListener('input',()=>{ const inp=$('#monto'); if(usdMode){ inp.value=inp.value.replace(/[^\d,]/g,'').replace(/,(?=.*,)/g,''); } else { const v=parseAmt(inp.value); inp.value=v?v.toLocaleString(config.moneda.locale):''; } validate(); });
 $('#fecha').addEventListener('change',validate);
 fillSelect($('#cuotasN'), CUOTAS_OPTS.map(n=>({key:String(n), label:n===1?'Sin cuotas':n+' cuotas'})), '1');
 $('#cuotasN').addEventListener('change',validate);
@@ -2679,7 +2727,7 @@ $('#mCancel').onclick=resetMForm;
 $('#mEmerg').onclick=()=>{
   const f=fixedMonthly();
   if(!f){ toast('Agrega presupuesto, créditos o suscripciones para calcularlo'); return; }
-  $('#mNombre').value='Fondo de emergencia'; mIcon='🛟'; renderMIcons(); $('#mObj').value=(Math.ceil(f*3/10000)*10000).toLocaleString('es-CL');
+  $('#mNombre').value='Fondo de emergencia'; mIcon='🛟'; renderMIcons(); $('#mObj').value=(Math.ceil(f*3/10000)*10000).toLocaleString(config.moneda.locale);
   toast('3 meses de '+fmt(f)+' en gastos fijos y presupuesto');
 };
 $('#mSave').onclick=async()=>{
@@ -2695,8 +2743,11 @@ $('#mSave').onclick=async()=>{
 
 /* ================= Inicio ================= */
 (async()=>{
-  config=migrate(lsGet('config') || clone(DEF));
-  applyAccent((config.tema&&config.tema.h)||210); renderAccent();
+  const rawConfig=lsGet('config');
+  config=migrate(rawConfig || clone(DEF));
+  if(!rawConfig){ config.moneda=detectCurrency(); saveConfig(); }
+  applyAccent((config.tema&&config.tema.h)||210); renderAccent(); renderMoneda();
+  document.querySelectorAll('[placeholder="$0"]').forEach(i=>i.placeholder=config.moneda.simbolo+'0');
   { const d0=lsGet(monthKey())||{}; movs=d0.movs||[]; pagos=d0.pagos||{}; subSkip=d0.subSkip||[]; }
   medio=defMedio('gasto');
   $('#fecha').value=defaultDate(); dSel=defaultDate(); $('#mFecha').value=idxToYm(mIdx(curMonth())+11);
