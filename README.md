@@ -72,13 +72,14 @@ así que ahí se ingresa manualmente.
 - Android Studio (incluye el SDK de Android y el JDK que necesita Gradle).
 
 ### Pasos
+La carpeta `android/` y sus íconos ya vienen listos en el repositorio, así que no hace falta
+crearlos de nuevo:
 ```bash
 npm install
 npm run build            # arma la carpeta www/ con los complementos nativos
-npx cap add android      # solo la primera vez: crea la carpeta android/
-npm run icons            # opcional: genera los íconos del APK desde assets/icon-only.png
-npm run android          # sincroniza y abre el proyecto en Android Studio
+npm run android           # sincroniza y abre el proyecto en Android Studio
 ```
+Si cambias el ícono en `assets/icon-only.png`, ejecuta `npm run icons` para regenerarlos.
 
 En Android Studio:
 - **Build → Build App Bundle(s) / APK(s) → Build APK(s)** para un APK de prueba.
@@ -99,5 +100,7 @@ Cada vez que cambies `index.html`, ejecuta `npm run sync` y vuelve a compilar.
 - En el APK, "Descargar respaldo" y los CSV abren el menú de compartir de Android,
   para guardarlos en Drive, Descargas o enviarlos por WhatsApp.
   Este flujo usa `@capacitor/filesystem` y `@capacitor/share`; pruébalo en tu teléfono la primera vez.
-- Puedes cambiar el identificador de la app en `capacitor.config.json` (`appId`) antes del primer `npx cap add android`.
+- Si quieres cambiar el identificador de la app (`appId` en `capacitor.config.json`), edítalo ahí y
+  vuelve a ejecutar `npx cap add android` (borrando antes la carpeta `android/` existente) para que
+  el proyecto nativo quede con el nuevo identificador.
 - La versión PWA y el APK guardan sus datos por separado. Para pasar datos entre ellas, usa el respaldo.

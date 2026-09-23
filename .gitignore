@@ -1,0 +1,8 @@
+node_modules/
+www/
+
+# Android Studio / Gradle crea su propio .gitignore dentro de android/
+# al ejecutar "npx cap add android", así que no hace falta duplicarlo aquí.
+
+.DS_Store
+*.log
