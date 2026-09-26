@@ -543,7 +543,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       </div>
       <div class="row2">
         <div><label class="f" for="fecha">Fecha</label><input class="txt" type="date" id="fecha"></div>
-        <div><label class="f" for="nota">Nota (opcional)</label><input class="txt" id="nota" maxlength="60" placeholder="Ej: Líder"></div>
+        <div><label class="f" for="nota">Nota (opcional)</label><input class="txt" id="nota" maxlength="60" placeholder="Ej: Compra semanal"></div>
       </div>
       <button class="btn" id="saveBtn" disabled>Guardar movimiento</button>
       <button class="linkbtn" id="favSave">☆ Guardar como favorito</button>
@@ -1920,7 +1920,7 @@ function renderPForm(){
   $('#pMedioLbl').textContent = pTipo==='ing' ? 'Dónde se deposita' : 'Dónde se cobra';
   $('#pDiaLbl').textContent = pTipo==='sub' ? 'Día de cobro' : pTipo==='ing' ? 'Día en que llega' : pTipo==='tarjeta' ? 'Día de pago de la factura' : 'Día de vencimiento';
   $('#pMontoLbl').textContent = {consumo:'Valor de la cuota', tarjeta:'Monto estimado de la factura', sub:'Monto mensual', ing:'Monto habitual', otro:'Monto mensual'}[pTipo];
-  $('#pNombre').placeholder = {consumo:'Ej: Crédito de consumo banco', tarjeta:'Ej: Visa banco', sub:'Ej: Netflix', ing:'Ej: Sueldo STL', otro:'Ej: Plan celular'}[pTipo];
+  $('#pNombre').placeholder = {consumo:'Ej: Crédito de consumo banco', tarjeta:'Ej: Tarjeta banco', sub:'Ej: Streaming', ing:'Ej: Sueldo STL', otro:'Ej: Plan celular'}[pTipo];
   if(!$('#pInicio').value) $('#pInicio').value=month;
   const nm={consumo:'crédito', tarjeta:'tarjeta', sub:'suscripción', ing:'ingreso fijo', otro:'pago fijo'}[pTipo];
   $('#pFormTitle').textContent=(editingId?'Editar ':'Nuevo ')+nm;
