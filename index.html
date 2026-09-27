@@ -705,6 +705,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <button data-sub="bud" data-i18n>Presupuesto</button>
       <button data-sub="patri" data-i18n>Patrimonio</button>
       <button data-sub="evo" data-i18n>Evolución</button>
+      <button data-sub="config" data-i18n>Configuración</button>
       <button data-sub="datos" data-i18n>Datos</button>
     </div>
     <div class="panel" data-sec="bud">
@@ -773,9 +774,8 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <h3 class="sub3" data-i18n>Cambios frente al mes anterior</h3>
       <div id="evoCmp"></div>
     </div>
-    <div class="panel" data-sec="datos">
-      <h2 data-i18n>Tus datos</h2>
-      <p class="note" id="bkInfo" style="margin-top:0"></p>
+    <div class="panel" data-sec="config">
+      <h2 data-i18n>Configuración</h2>
       <button class="linkbtn" id="introReplay" style="padding:0" data-i18n>Ver la introducción de nuevo</button>
       <button class="btn ghost" id="installBtn" hidden data-i18n>Instalar la app en este dispositivo</button>
       <h3 class="sub3" data-i18n>Idioma</h3>
@@ -798,6 +798,10 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <div id="remBox"></div>
       <h3 class="sub3" data-i18n>Bloqueo</h3>
       <div id="lockBox"></div>
+    </div>
+    <div class="panel" data-sec="datos">
+      <h2 data-i18n>Tus datos</h2>
+      <p class="note" id="bkInfo" style="margin-top:0"></p>
       <h3 class="sub3" data-i18n>Respaldo</h3>
       <p class="note" style="margin-top:0" data-i18n>Un archivo con toda tu información: configuración, cuentas, fijos y todos los meses. Sirve para guardar una copia o pasar tus datos a otro dispositivo.</p>
       <button class="btn" id="bkExport" data-i18n>Descargar respaldo</button>
@@ -1048,7 +1052,7 @@ const EN = {
   'Sin cambios por categoría.':'No changes by category.','Gasto por categoría en el período':'Spending by category in this period',
   'Aún no hay datos en este período.':'No data yet for this period.','Ninguna':'None','Consultando el dólar…':'Checking the dollar rate…',
   'Ingresa un valor válido, por ejemplo 945,50':'Enter a valid value, for example 945.50','Dólar guardado':'Dollar rate saved','Dólar actualizado: ':'Dollar rate updated: ',
-  'Ej: 945,50':'E.g: 945.50',
+  'Ej: 945,50':'E.g: 945.50','Configuración':'Settings',
   'Ocultar histórico':'Hide history','No se pudieron programar los recordatorios':'Could not schedule reminders','Se acerca un pago':'A payment is coming up',
   'Vence hoy':'Due today','Mis cuentas':'Mis cuentas','¿Registraste tus pasajes y gastos de hoy?':'Did you log your fares and expenses today?',
   '¿Registraste tus gastos de hoy?':'Did you log your expenses today?','Resumen semanal':'Weekly summary',
