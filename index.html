@@ -791,7 +791,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <div class="swatches" id="accentSwatches" role="group" data-i18n-aria="Color de acento" aria-label="Color de acento"></div>
       <h3 class="sub3" data-i18n>Dólar</h3>
       <div class="lrow" style="border-top:0"><div><b id="usdVal" data-i18n>Sin valor</b><small id="usdInfo" style="display:block;color:var(--muted);font-size:.85rem"></small></div><button class="sbtn" id="usdRefresh" data-i18n>Actualizar ahora</button></div>
-      <div class="acts"><input class="payin num" id="usdManual" inputmode="decimal" placeholder="Ej: 945,50" data-i18n-aria="Valor del dólar manual" aria-label="Valor del dólar manual"><button class="sbtn" id="usdSet" data-i18n>Usar este valor</button></div>
+      <div class="acts"><input class="payin num" id="usdManual" inputmode="decimal" placeholder="Ej: 945,50" data-i18n-ph="Ej: 945,50" data-i18n-aria="Valor del dólar manual" aria-label="Valor del dólar manual"><button class="sbtn" id="usdSet" data-i18n>Usar este valor</button></div>
       <button class="linkbtn" id="usdHistToggle" hidden style="padding:10px 0 0" data-i18n>Ver histórico</button>
       <div class="usdhist" id="usdHist" hidden></div>
       <h3 class="sub3" data-i18n>Recordatorios</h3>
@@ -1048,6 +1048,7 @@ const EN = {
   'Sin cambios por categoría.':'No changes by category.','Gasto por categoría en el período':'Spending by category in this period',
   'Aún no hay datos en este período.':'No data yet for this period.','Ninguna':'None','Consultando el dólar…':'Checking the dollar rate…',
   'Ingresa un valor válido, por ejemplo 945,50':'Enter a valid value, for example 945.50','Dólar guardado':'Dollar rate saved','Dólar actualizado: ':'Dollar rate updated: ',
+  'Ej: 945,50':'E.g: 945.50',
   'Ocultar histórico':'Hide history','No se pudieron programar los recordatorios':'Could not schedule reminders','Se acerca un pago':'A payment is coming up',
   'Vence hoy':'Due today','Mis cuentas':'Mis cuentas','¿Registraste tus pasajes y gastos de hoy?':'Did you log your fares and expenses today?',
   '¿Registraste tus gastos de hoy?':'Did you log your expenses today?','Resumen semanal':'Weekly summary',
@@ -1201,7 +1202,8 @@ function renderIdioma(){
 }
 $('#idiomaSel').addEventListener('change',async e=>{
   config.idioma=e.target.value; applyMonthDayNames(); applyStaticI18n(); renderMoneda();
-  renderAll(); await saveConfig(); toast(t('Idioma actualizado'));
+  renderAll(); updateSaveUi(); renderRem(); renderLockBox();
+  await saveConfig(); toast(t('Idioma actualizado'));
 });
 
 /* ================= Estado ================= */
