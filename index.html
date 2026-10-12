@@ -1870,7 +1870,7 @@ function renderFilters(src){
   const cats=[...new Set([...config.cats.gasto, ...config.cats.ingreso, ...list.map(m=>m.cat), filt.cat])].filter(Boolean);
   fillSelect($('#fCat'), [{key:'',label:t('Todas')}, ...cats.map(c=>({key:c,label:catLabel(c)}))], filt.cat);
   const meds=[...new Set([...list.map(m=>m.medio), filt.medio])].filter(Boolean).sort();
-  fillSelect($('#fMedio'), [{key:'',label:t('Todos')}, ...meds.map(c=>({key:c,label:medioLabel(c)}))], filt.medio);
+  fillSelect($('#fMedio'), [{key:'',label:t('Todos')}, ...meds.map(c=>({key:c,label:medioLabel(medioInfo(c).label)}))], filt.medio);
   $('#fOrigen').value=filt.origen; $('#fOrden').value=filt.orden; $('#fDesde').value=filt.desde; $('#fHasta').value=filt.hasta;
   if(document.activeElement!==$('#fMin')) $('#fMin').value=filt.min?filt.min.toLocaleString(config.moneda.locale):'';
   if(document.activeElement!==$('#fMax')) $('#fMax').value=filt.max?filt.max.toLocaleString(config.moneda.locale):'';
@@ -1881,7 +1881,7 @@ function renderFilters(src){
   const lblDesde=t('Desde '), lblHasta=t('Hasta ');
   if(filt.q.trim()) pill('"'+filt.q.trim()+'"',()=>filt.q='');
   if(filt.cat) pill(emo(filt.cat)+' '+catLabel(filt.cat),()=>filt.cat='');
-  if(filt.medio) pill(medioLabel(filt.medio),()=>filt.medio='');
+  if(filt.medio) pill(medioLabel(medioInfo(filt.medio).label),()=>filt.medio='');
   if(filt.origen) pill(ORIGEN_LBL()[filt.origen],()=>filt.origen='');
   if(filt.desde) pill(lblDesde+fmtDate(filt.desde),()=>filt.desde='');
   if(filt.hasta) pill(lblHasta+fmtDate(filt.hasta),()=>filt.hasta='');
@@ -1925,7 +1925,7 @@ function movRow(m, showDate){
   const ico=mk('span','ico',m.tipo==='transfer'?'🔁':m.tipo==='ahorro'?'🐷':emo(m.cat)); ico.style.setProperty('--h', m.tipo==='transfer'?205:m.tipo==='ahorro'?330:hue(m.cat)); ico.setAttribute('aria-hidden','true'); const meta=mk('div','meta'); const b=mk('b','',catLabel(m.cat));
   const tg=movTag(m); if(tg) b.appendChild(mk('span','tag',tg));
   const d=new Date(m.fecha+'T12:00:00');
-  meta.append(b, mk('small','',[showDate?d.getDate()+' '+MESES[d.getMonth()].slice(0,3).toLowerCase():'', medioLabel(m.medio), m.usd?fmtUsd(m.usd):'', m.nota, m.excluir?t('no suma a gastos'):''].filter(Boolean).join(', ')));
+  meta.append(b, mk('small','',[showDate?d.getDate()+' '+MESES[d.getMonth()].slice(0,3).toLowerCase():'', medioLabel(medioInfo(m.medio).label), m.usd?fmtUsd(m.usd):'', m.nota, m.excluir?t('no suma a gastos'):''].filter(Boolean).join(', ')));
   const col = m.excluir?'var(--muted)':m.tipo==='ingreso'?'var(--in)':m.tipo==='ahorro'?'var(--accent)':'var(--out)';
   const sg = m.tipo==='transfer' ? '' : (m.tipo==='ingreso' || m.monto<0) ? '+' : '−';
   const a=mk('span','amt num',sg+fmt(Math.abs(m.monto))); a.style.color=m.tipo==='transfer'?'var(--muted)':m.tipo==='gasto'&&!m.excluir?'var(--ink)':col;
@@ -2002,7 +2002,7 @@ function openSheet(m){
 
   if(m.virtual){
     const c=config.compras.find(x=>x.id===m.compraId); if(!c){ closeSheet(); return; }
-    sh.appendChild(mk('p','note',t('Pagada con ')+medioLabel(m.medio)+t('. Cada mes se suma solo la cuota que corresponde.')));
+    sh.appendChild(mk('p','note',t('Pagada con ')+medioLabel(medioInfo(m.medio).label)+t('. Cada mes se suma solo la cuota que corresponde.')));
     const desc=mk('input','txt'); desc.value=c.desc; desc.maxLength=60;
     const cat=mk('select','txt'); fillSelect(cat, config.cats.gasto.map(x=>({key:x,label:catLabel(x)})), c.cat);
     const tot=moneyField(c.total);
@@ -2396,10 +2396,10 @@ function renderMedios(){
   allMovs().filter(m=>m.tipo==='gasto' && !m.excluir && m.monto).forEach(m=>o[m.medio]=(o[m.medio]||0)+m.monto);
   const tot=Object.values(o).reduce((a,b)=>a+b,0);
   if(!tot){ el.innerHTML='<p class="empty" style="padding:10px 0">'+t('Sin gastos este mes.')+'</p>'; return; }
-  const cardNames=cards().map(c=>c.nombre).concat('Crédito');
-  Object.entries(o).sort((a,b)=>b[1]-a[1]).forEach(([l,v])=>{
-    const r=mk('div','bud'); const top=mk('div','top'); top.append(mk('b','',(cardNames.includes(l)?'💳 ':'')+medioLabel(l)), mk('span','num',fmt(v)+' ('+Math.round(v/tot*100)+'%)'));
-    const bar=mk('div','bar'); const s=mk('span'); s.style.width=(v/tot*100)+'%'; s.style.background=cardNames.includes(l)?'var(--accent)':'var(--in)'; bar.appendChild(s);
+  Object.entries(o).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{
+    const isCard = k.startsWith('t:') || k==='Crédito';
+    const r=mk('div','bud'); const top=mk('div','top'); top.append(mk('b','',(isCard?'💳 ':'')+medioLabel(medioInfo(k).label)), mk('span','num',fmt(v)+' ('+Math.round(v/tot*100)+'%)'));
+    const bar=mk('div','bar'); const s=mk('span'); s.style.width=(v/tot*100)+'%'; s.style.background=isCard?'var(--accent)':'var(--in)'; bar.appendChild(s);
     r.append(top,bar); el.appendChild(r);
   });
 }
