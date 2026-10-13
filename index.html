@@ -16,14 +16,14 @@
 <style>
 :root{
   --bg:#EDF1EF;--surface:#FFFFFF;--ink:#1D2B36;--muted:#5E6B74;--line:#D5DDD9;
-  --in:#2F7D5B;--out:#B23A48;--accent:#3D5A80;--accent2:#7C5CBF;--soft:#E2E8E5;--warn:#B7791F;
+  --in:#2F7D5B;--out:#B23A48;--accent:#3D5A80;--accent2:#7C5CBF;--accent3:#257A70;--on-accent:#FFFFFF;--soft:#E2E8E5;--warn:#B7791F;
   box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
     --bg:#121A1F;--surface:#1B252C;--ink:#E6ECEF;--muted:#9AA8B1;--line:#2C3942;
-    --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
+    --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--accent3:#5FC4B8;--on-accent:#121A1F;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
   }
   :root:not([data-theme="light"]) .ico,:root:not([data-theme="light"]) .chip .em,:root:not([data-theme="light"]) .catdot,:root:not([data-theme="light"]) .mico,:root:not([data-theme="light"]) .intro-icn{
     background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
@@ -34,7 +34,7 @@
 }
 :root[data-theme="dark"]{
   --bg:#121A1F;--surface:#1B252C;--ink:#E6ECEF;--muted:#9AA8B1;--line:#2C3942;
-  --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
+  --in:#5BBE8F;--out:#E0707D;--accent:#8FB0D8;--accent2:#B79CED;--accent3:#5FC4B8;--on-accent:#121A1F;--soft:#243039;--warn:#E0A94A;color-scheme:dark;
 }
 :root[data-theme="dark"] .ico,:root[data-theme="dark"] .chip .em,:root[data-theme="dark"] .catdot,:root[data-theme="dark"] .mico,:root[data-theme="dark"] .intro-icn{
   background:hsl(var(--h,210) 45% 22%);color:hsl(var(--h,210) 70% 78%);
@@ -86,7 +86,7 @@ label.f{display:block;font-size:.9rem;color:var(--muted);margin:14px 0 6px}
 .chip.add{border-style:dashed;color:var(--accent);border-color:var(--accent)}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .txt{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:11px 12px;min-height:46px}
-.btn{width:100%;margin-top:18px;border:0;border-radius:12px;padding:15px;font-weight:600;font-size:1.05rem;cursor:pointer;background:var(--accent);color:#fff}
+.btn{width:100%;margin-top:18px;border:0;border-radius:12px;padding:15px;font-weight:600;font-size:1.05rem;cursor:pointer;background:var(--accent);color:var(--on-accent)}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);margin-top:10px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 
@@ -145,7 +145,7 @@ nav.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:re
 .pill.ok{color:var(--in)}.pill.soon{color:var(--warn)}.pill.late{background:var(--out);color:#fff}
 .pend .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .sbtn{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 12px;cursor:pointer;font-weight:600;font-size:.9rem}
-.sbtn.pri{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sbtn.pri{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .sbtn.arm{border-color:var(--out);color:var(--out)}
 .sbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .payin{width:130px;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:8px 10px;text-align:right}
@@ -156,7 +156,7 @@ nav.tabs div{max-width:560px;margin:0 auto;display:grid;grid-template-columns:re
 .ivbar i{display:block;height:100%;background:hsl(var(--h,210) 55% 50%)}
 .ivdot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;background:hsl(var(--h,210) 55% 50%)}
 .cstate.late{border-left-color:var(--out)}.cstate.late b{color:var(--out)}
-.cstate.ahead{border-left-color:var(--accent)}.cstate.ahead b{color:var(--accent)}
+.cstate.ahead{border-left-color:var(--accent3)}.cstate.ahead b{color:var(--accent3)}
 .cbar{height:6px;border-radius:3px;background:var(--soft);margin-top:10px;overflow:hidden}
 .cbar span{display:block;height:100%;background:var(--in)}
 .cprog{font-size:.85rem;color:var(--muted);margin-top:4px}
@@ -208,8 +208,8 @@ select.txt{appearance:auto}
 .seg.four button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .mhint{font-size:.88rem;color:var(--muted);margin-top:8px;min-height:1.2em}
 .mhint.bad{color:var(--out)}
-.cardbox{margin-top:10px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--soft)), color-mix(in srgb, var(--accent2) 14%, var(--soft)));font-size:.92rem}
-.cardbox .cbar span{background:var(--accent)}
+.cardbox{margin-top:10px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg, color-mix(in srgb, var(--accent3) 16%, var(--soft)), color-mix(in srgb, var(--accent) 12%, var(--soft)));font-size:.92rem}
+.cardbox .cbar span{background:var(--accent3)}
 .cardbox .cbar span.w{background:var(--warn)}.cardbox .cbar span.x{background:var(--out)}
 .cardbox .row{display:flex;justify-content:space-between;gap:8px}
 .cardbox .row b{font-family:"Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums}
@@ -226,9 +226,9 @@ select.txt{appearance:auto}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;font-size:.95rem;max-width:90vw;text-align:center;z-index:9}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-.split .a{background:var(--accent)}
-.legend .ahv{text-align:center}.legend .ahv b{color:var(--accent)}
-.proj{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:14px;padding:12px 14px;border-radius:12px;border:1px dashed var(--accent);background:transparent;cursor:pointer;text-align:left;gap:10px}
+.split .a{background:var(--accent2)}
+.legend .ahv{text-align:center}.legend .ahv b{color:var(--accent2)}
+.proj{display:flex;justify-content:space-between;align-items:center;width:100%;margin-top:14px;padding:12px 14px;border-radius:12px;border:1px dashed var(--accent3);background:transparent;cursor:pointer;text-align:left;gap:10px}
 .proj b{font-family:"Bricolage Grotesque",sans-serif;font-size:1.15rem}
 .proj b.neg{color:var(--out)}
 .proj:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
@@ -247,7 +247,7 @@ nav.tabs div{grid-template-columns:repeat(5,1fr)!important}
 .lhead .num{font-weight:600}
 .mov{cursor:pointer;border-radius:8px}
 .mov:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.mov .tag{font-size:.72rem;font-weight:600;color:var(--accent);margin-left:6px}
+.mov .tag{font-size:.72rem;font-weight:600;color:var(--accent3);margin-left:6px}
 .sheetbg{position:fixed;inset:0;background:rgba(10,15,20,.5);z-index:20;display:flex;align-items:flex-end;justify-content:center}
 .sheet{background:var(--surface);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px calc(20px + env(safe-area-inset-bottom,0px))}
 .sheet h2{font:600 1.1rem/1.3 "Bricolage Grotesque",sans-serif;margin:0 0 4px}
@@ -265,7 +265,7 @@ nav.tabs div{grid-template-columns:repeat(5,1fr)!important}
 .lrow .neg{color:var(--out)}
 .meta{padding:14px 0;border-top:1px solid var(--line)}
 .meta:first-child{border-top:0}
-.meta .cbar span{background:var(--accent)}
+.meta .cbar span{background:var(--accent2)}
 .meta .cbar span.done{background:var(--in)}
 .chart svg{width:100%;height:auto;display:block}
 .chart text{fill:var(--muted);font:11px Figtree,system-ui,sans-serif}
@@ -281,7 +281,7 @@ nav.tabs div{grid-template-columns:repeat(5,1fr)!important}
 .wrap{padding-top:8px;padding-bottom:130px}
 .monthbar{margin-bottom:4px}
 .monthbar h1{font-size:1.15rem}
-.balance{background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, var(--surface)), color-mix(in srgb, var(--in) 12%, var(--surface)));border:1px solid var(--line);border-radius:20px;padding:18px 16px 16px;margin-top:8px}
+.balance{background:linear-gradient(135deg, color-mix(in srgb, var(--accent3) 16%, var(--surface)), color-mix(in srgb, var(--accent) 10%, var(--surface)));border:1px solid var(--line);border-radius:20px;padding:18px 16px 16px;margin-top:8px}
 .balance .big{margin:0 0 12px}
 .balance.slim{padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
 .balance.slim .big{font-size:1.6rem;margin:0}
@@ -327,7 +327,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .drow .info small.warn{color:var(--warn)}
 .dquick{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .chipbtn{border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:999px;padding:7px 12px;font-weight:600;font-size:.88rem;cursor:pointer}
-.chipbtn.solid{background:var(--accent);color:#fff}
+.chipbtn.solid{background:var(--accent);color:var(--on-accent)}
 .chipbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .dmore{border:0;background:none;color:var(--muted);font-size:.88rem;cursor:pointer;padding:7px 4px;margin-left:auto}
 .ddetail{margin-top:8px;padding:12px;border-radius:12px;background:var(--bg)}
@@ -340,11 +340,11 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .filebtn:focus-within{outline:3px solid var(--accent);outline-offset:2px}
 /* ===== v3 ===== */
 .seg.tipo3{grid-template-columns:repeat(3,1fr)}
-.seg button[aria-pressed="true"].tr{background:var(--accent);color:#fff}
+.seg button[aria-pressed="true"].tr{background:var(--accent);color:var(--on-accent)}
 .seg button[data-bm][aria-pressed="true"],.seg button[data-lt][aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .mlabel{display:flex;justify-content:space-between;align-items:flex-end}
 .usdbtn{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:4px 10px;font-weight:700;font-size:.8rem;cursor:pointer;color:var(--muted)}
-.usdbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.usdbtn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .usdbtn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .guide h2{margin-bottom:4px!important}
 .gstep{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
@@ -394,7 +394,7 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .chips.scrollx::-webkit-scrollbar{display:none}
 .chips.scrollx .chip{flex:none}
 #fActive:not(:empty){margin-top:12px}
-.fpill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:999px;padding:6px 10px 6px 12px;font-size:.85rem;font-weight:600;cursor:pointer}
+.fpill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--accent3);color:var(--accent3);background:transparent;border-radius:999px;padding:6px 10px 6px 12px;font-size:.85rem;font-weight:600;cursor:pointer}
 .fpill span{font-size:1rem;line-height:1}
 .fpill:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .fpill.clear{border-color:var(--line);color:var(--muted)}
@@ -407,7 +407,28 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .swatch{width:36px;height:36px;border-radius:50%;border:2px solid transparent;cursor:pointer;background:hsl(var(--h) 60% 52%);padding:0}
 .swatch[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 2px var(--surface) inset}
 .swatch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:1.7rem;line-height:1;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.22);cursor:pointer;z-index:6}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.preset{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 8px;background:var(--surface);cursor:pointer;font-size:.88rem;color:var(--ink)}
+.preset i{width:14px;height:14px;border-radius:50%;display:block}
+.preset[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.preset:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.trole{padding:14px 0 4px;border-top:1px solid var(--line);margin-top:14px}
+.trole .hd{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.trole .hd b{font-weight:600}
+.trole small{display:block;color:var(--muted);font-size:.85rem}
+.trole code{font-size:.8rem;color:var(--muted)}
+.trole .swatches .swatch{width:30px;height:30px}
+.colorin{width:30px;height:30px;border-radius:50%;border:2px dashed var(--muted);padding:2px;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.colorin::-webkit-color-swatch-wrapper{padding:0}
+.colorin::-webkit-color-swatch{border:0;border-radius:50%}
+.colorin::-moz-color-swatch{border:0;border-radius:50%}
+.colorin:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scale{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;margin-top:10px}
+.scale button{height:28px;border-radius:6px;border:0;padding:0;cursor:pointer}
+.scale button[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+.scale button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.scalelbl{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:3px}
+.fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:56px;height:56px;border-radius:50%;border:0;background:var(--accent);color:var(--on-accent);font-size:1.7rem;line-height:1;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.22);cursor:pointer;z-index:6}
 .fab:focus-visible{outline:3px solid var(--accent2);outline-offset:3px}
 @media (prefers-reduced-motion:no-preference){.fab{transition:transform .15s ease}.fab:active{transform:scale(.92)}}
 .mov-wrap{position:relative;overflow:hidden;border-radius:8px}
@@ -435,8 +456,8 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
 .catlegend b{color:var(--ink);font-variant-numeric:tabular-nums}
 .usdhist{margin-top:12px}
 .usdhist svg{width:100%;height:auto;display:block}
-.usdhist path.line{fill:none;stroke:var(--accent);stroke-width:2}
-.usdhist path.area{fill:color-mix(in srgb, var(--accent) 16%, transparent);stroke:none}
+.usdhist path.line{fill:none;stroke:var(--accent3);stroke-width:2}
+.usdhist path.area{fill:color-mix(in srgb, var(--accent3) 16%, transparent);stroke:none}
 @media print{
   body>*:not(#printArea){display:none!important}
   #printArea{display:block!important;padding:0;max-width:none}
@@ -836,8 +857,10 @@ nav.tabs{background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop
       <label class="sr-only" for="monedaSel" data-i18n>Moneda</label>
       <select class="txt" id="monedaSel"></select>
       <h3 class="sub3" data-i18n>Apariencia</h3>
-      <p class="note" style="margin-top:0" data-i18n>Elige el color de acento de la app.</p>
-      <div class="swatches" id="accentSwatches" role="group" data-i18n-aria="Color de acento" aria-label="Color de acento"></div>
+      <p class="note" style="margin-top:0" data-i18n>Elige los colores de la app. Cada color genera una escala de tonos que se usa en distintas partes.</p>
+      <div class="presets" id="temaPresets" role="group" data-i18n-aria="Paletas sugeridas" aria-label="Paletas sugeridas"></div>
+      <div id="temaRoles"></div>
+      <button class="linkbtn" id="temaReset" data-i18n>Restablecer colores</button>
       <h3 class="sub3" data-i18n>Dólar</h3>
       <div class="lrow" style="border-top:0"><div><b id="usdVal" data-i18n>Sin valor</b><small id="usdInfo" style="display:block;color:var(--muted);font-size:.85rem"></small></div><button class="sbtn" id="usdRefresh" data-i18n>Actualizar ahora</button></div>
       <div class="acts"><input class="payin num" id="usdManual" inputmode="decimal" placeholder="Ej: 945,50" data-i18n-ph="Ej: 945,50" data-i18n-aria="Valor del dólar manual" aria-label="Valor del dólar manual"><button class="sbtn" id="usdSet" data-i18n>Usar este valor</button></div>
@@ -1088,7 +1111,7 @@ const EN = {
   'Instalar la app en este dispositivo':'Install the app on this device','Idioma':'Language',
   'Elegido según el idioma de tu dispositivo. Cámbialo si prefieres otro.':'Chosen based on your device language. Change it if you prefer another.',
   'Elegida según tu idioma y país. Cámbiala si no es la correcta.':"Chosen based on your language and country. Change it if it's not right.",
-  'Apariencia':'Appearance','Elige el color de acento de la app.':"Choose the app's accent color.",'Color de acento':'Accent color',
+  'Apariencia':'Appearance','Elige los colores de la app. Cada color genera una escala de tonos que se usa en distintas partes.':'Choose the app colors. Each color generates a scale of shades used in different parts of the app.','Paletas sugeridas':'Suggested palettes','Restablecer colores':'Reset colors','Colores restablecidos':'Colors reset','Color personalizado':'Custom color','Escala de tonos':'Shade scale','Tono ':'Shade ','Primario':'Primary','Secundario':'Secondary','Terciario':'Tertiary','Botones, enlaces y acciones':'Buttons, links and actions','Ahorro y metas':'Savings and goals','Saldo del mes, filtros y destacados':'Monthly balance, filters and highlights','Claro':'Light','Oscuro':'Dark','Océano':'Ocean','Bosque':'Forest','Atardecer':'Sunset','Lavanda':'Lavender','Grafito':'Graphite','Cereza':'Cherry',
   'Dólar':'US Dollar','Sin valor':'No value','Actualizar ahora':'Update now','Valor del dólar manual':'Manual dollar rate','Usar este valor':'Use this value',
   'Ver histórico':'View history','Recordatorios':'Reminders','Bloqueo':'Lock','Respaldo':'Backup',
   'Un archivo con toda tu información: configuración, cuentas, fijos y todos los meses. Sirve para guardar una copia o pasar tus datos a otro dispositivo.':'A file with all your information: settings, accounts, fixed items, and every month. Use it to keep a copy or move your data to another device.',
@@ -1269,7 +1292,7 @@ function renderIdioma(){
 }
 $('#idiomaSel').addEventListener('change',async e=>{
   config.idioma=e.target.value; applyMonthDayNames(); applyStaticI18n(); renderMoneda();
-  renderAll(); updateSaveUi(); renderRem(); renderLockBox();
+  renderAll(); updateSaveUi(); renderRem(); renderLockBox(); renderTema();
   await saveConfig(); toast(t('Idioma actualizado'));
 });
 
@@ -1280,7 +1303,7 @@ const DEF = {
     ingreso:['Sueldo','Freelance','Bono','Arriendo recibido','Otros ingresos']
   },
   budget:{}, budgetMes:{}, pendientes:[], diarios:[], compras:[], cuentas:[], metas:[], favs:[], prestamos:[], inversiones:[],
-  usd:{valor:0, fecha:'', fuente:''}, guia:{oculta:false, skip:{}}, rem:{on:false, hora:'20:00', antes:2}, tema:{h:210}, moneda:MONEDA_DEF, idioma:'es'
+  usd:{valor:0, fecha:'', fuente:''}, guia:{oculta:false, skip:{}}, rem:{on:false, hora:'20:00', antes:2}, tema:{p:'#3D5A80', s:'#7C5CBF', t:'#2A9D8F'}, moneda:MONEDA_DEF, idioma:'es'
 };
 let config = clone(DEF);
 let month = curMonth();
@@ -1337,7 +1360,7 @@ function migrate(c){
   c.budget=c.budget||{}; c.budgetMes=c.budgetMes||{};
   c.usd=c.usd||{valor:0,fecha:'',fuente:''}; c.guia=c.guia||{oculta:false,skip:{}}; c.guia.skip=c.guia.skip||{};
   c.rem=c.rem||{on:false,hora:'20:00',antes:2};
-  c.tema=c.tema||{h:210};
+  if(!c.tema || !c.tema.p){ const h=c.tema&&c.tema.h; c.tema = (h==null||h===210) ? {p:'#3D5A80', s:'#7C5CBF', t:'#2A9D8F'} : {p:hslToHex(h,45,42), s:hslToHex((h+65)%360,55,60), t:'#2A9D8F'}; }
   c.moneda=c.moneda||MONEDA_DEF;
   c.idioma=c.idioma||'es';
   c.diarios.forEach(g=>{ if(!g.desde) g.desde=today(); });
@@ -1394,20 +1417,69 @@ function fillSelect(sel, opts, value){
 }
 
 /* ================= Apariencia ================= */
-const ACCENTS=[210,340,152,24,275,0];
-function applyAccent(h){
-  const r=document.documentElement.style;
-  r.setProperty('--accent','hsl('+h+' 45% 42%)');
-  r.setProperty('--accent2','hsl('+((h+65)%360)+' 55% 60%)');
+const TEMA_DEF={p:'#3D5A80', s:'#7C5CBF', t:'#2A9D8F'};
+const TEMA_PRESETS=[
+  ['Océano','#3D5A80','#7C5CBF','#2A9D8F'],
+  ['Bosque','#2F6B4F','#B7791F','#3D7EA6'],
+  ['Atardecer','#B4534B','#E09F3E','#6D597A'],
+  ['Lavanda','#6A4C93','#D16BA5','#4D908E'],
+  ['Grafito','#37474F','#78909C','#E07A5F'],
+  ['Cereza','#9D174D','#2563EB','#059669'],
+];
+const TEMA_ROLES=[
+  ['p','Primario','Botones, enlaces y acciones'],
+  ['s','Secundario','Ahorro y metas'],
+  ['t','Terciario','Saldo del mes, filtros y destacados'],
+];
+const TEMA_HUES=[210,190,160,130,45,24,0,340,300,275];
+const SCALE_L=[95,89,80,69,57,46,37,28,19];
+const SCALE_N=[100,200,300,400,500,600,700,800,900];
+function hexToRgb(h){ h=String(h).replace('#',''); if(h.length===3) h=h.split('').map(c=>c+c).join(''); const n=parseInt(h,16)||0; return [n>>16&255,n>>8&255,n&255]; }
+function rgbToHex(r,g,b){ return '#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('').toUpperCase(); }
+function hexToHsl(hex){ let [r,g,b]=hexToRgb(hex).map(v=>v/255); const mx=Math.max(r,g,b), mn=Math.min(r,g,b), l=(mx+mn)/2; let h=0,s=0;
+  if(mx!==mn){ const d=mx-mn; s=l>.5?d/(2-mx-mn):d/(mx+mn); h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4; h*=60; }
+  return [h,s*100,l*100]; }
+function hslToHex(h,s,l){ s/=100; l/=100; const a=s*Math.min(l,1-l), f=n=>{ const k=(n+h/30)%12; return l-a*Math.max(-1,Math.min(k-3,9-k,1)); }; return rgbToHex(f(0)*255,f(8)*255,f(4)*255); }
+function luminance(hex){ return hexToRgb(hex).map(v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); }).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0); }
+function contrast(a,b){ const x=luminance(a), y=luminance(b); return (Math.max(x,y)+.05)/(Math.min(x,y)+.05); }
+function colorScale(hex){ const [h,s]=hexToHsl(hex); return SCALE_L.map((l,i)=>hslToHex(h, i<2?Math.min(s,55):i<4?Math.min(s,80):s, l)); }
+// Ajusta el tono hasta que se lea bien sobre el fondo (contraste 4.5:1), sin cambiar el matiz.
+function readable(hex,bg,dir){ let [h,s,l]=hexToHsl(hex), c=hex;
+  for(let i=0;i<70 && contrast(c,bg)<4.5;i++){ l=Math.max(0,Math.min(100,l+dir*1.2)); c=hslToHex(h,s,l); }
+  return c; }
+function temaActual(){ const tm=config.tema||{}; return {p:tm.p||TEMA_DEF.p, s:tm.s||TEMA_DEF.s, t:tm.t||TEMA_DEF.t}; }
+function applyTema(){
+  const tm=temaActual(), keys=[['accent','p'],['accent2','s'],['accent3','t']];
+  const light=keys.map(([v,k])=>'--'+v+':'+readable(tm[k],'#EDF1EF',-1)+';').join('')+'--on-accent:#FFFFFF;';
+  const dark=keys.map(([v,k])=>'--'+v+':'+readable(tm[k],'#1B252C',1)+';').join('')+'--on-accent:#121A1F;';
+  let st=document.getElementById('temaVars'); if(!st){ st=document.createElement('style'); st.id='temaVars'; document.head.appendChild(st); }
+  st.textContent=':root{'+light+'}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){'+dark+'}}:root[data-theme="dark"]{'+dark+'}';
+  const meta=document.querySelector('meta[name="theme-color"]'); if(meta) meta.content=readable(tm.p,'#EDF1EF',-1);
 }
-function renderAccent(){
-  const h=(config.tema&&config.tema.h)||210, el=$('#accentSwatches'); el.innerHTML='';
-  ACCENTS.forEach(a=>{
-    const b=mk('button','swatch'); b.style.setProperty('--h',a); b.setAttribute('aria-pressed',a===h); b.setAttribute('aria-label','Color de acento '+a);
-    b.onclick=async()=>{ config.tema={h:a}; applyAccent(a); renderAccent(); await saveConfig(); };
-    el.appendChild(b);
+async function setTema(tm){ config.tema={...temaActual(), ...tm}; applyTema(); renderTema(); await saveConfig(); }
+function renderTema(){
+  const tm=temaActual(), pr=$('#temaPresets'); pr.innerHTML='';
+  TEMA_PRESETS.forEach(([n,p,s,t3])=>{
+    const b=mk('button','preset'); b.setAttribute('aria-pressed', tm.p===p&&tm.s===s&&tm.t===t3);
+    [p,s,t3].forEach(c=>{ const i=mk('i'); i.style.background=c; b.appendChild(i); });
+    b.appendChild(document.createTextNode(t(n))); b.onclick=()=>setTema({p,s,t:t3}); pr.appendChild(b);
+  });
+  const box=$('#temaRoles'); box.innerHTML='';
+  TEMA_ROLES.forEach(([k,lbl,uso])=>{
+    const cur=tm[k], w=mk('div','trole');
+    const hd=mk('div','hd'); const tl=mk('div'); tl.append(mk('b','',t(lbl)), mk('small','',t(uso))); hd.append(tl, mk('code','',cur)); w.appendChild(hd);
+    const sw=mk('div','swatches'); sw.setAttribute('role','group'); sw.setAttribute('aria-label',t(lbl));
+    TEMA_HUES.forEach(h=>{ const c=hslToHex(h,52,44), b=mk('button','swatch'); b.style.background=c; b.setAttribute('aria-pressed',c===cur); b.setAttribute('aria-label',t(lbl)+' '+c); b.onclick=()=>setTema({[k]:c}); sw.appendChild(b); });
+    const ci=mk('input','colorin'); ci.type='color'; ci.value=cur.toLowerCase(); ci.title=t('Color personalizado'); ci.setAttribute('aria-label',t('Color personalizado')+' '+t(lbl));
+    ci.onchange=()=>setTema({[k]:ci.value.toUpperCase()}); sw.appendChild(ci); w.appendChild(sw);
+    const sc=mk('div','scale'); sc.setAttribute('role','group'); sc.setAttribute('aria-label',t('Escala de tonos')+' '+t(lbl));
+    colorScale(cur).forEach((c,i)=>{ const b=mk('button'); b.style.background=c; b.setAttribute('aria-pressed',c===cur); b.setAttribute('aria-label',t('Tono ')+SCALE_N[i]+' '+c); b.title=SCALE_N[i]+' · '+c; b.onclick=()=>setTema({[k]:c}); sc.appendChild(b); });
+    w.appendChild(sc);
+    const sl=mk('div','scalelbl'); sl.append(mk('span','',t('Claro')), mk('span','',t('Oscuro'))); w.appendChild(sl);
+    box.appendChild(w);
   });
 }
+$('#temaReset').onclick=async()=>{ await setTema({...TEMA_DEF}); toast(t('Colores restablecidos')); };
 const MONEDA_NOMBRE_EN = {
   'Peso chileno':'Chilean peso','Peso argentino':'Argentine peso','Peso mexicano':'Mexican peso','Peso colombiano':'Colombian peso','Sol peruano':'Peruvian sol',
   'Peso uruguayo':'Uruguayan peso','Boliviano':'Boliviano','Guaraní':'Guarani','Bolívar':'Bolivar','Colón costarricense':'Costa Rican colon','Quetzal':'Quetzal',
@@ -1927,7 +1999,7 @@ function movRow(m, showDate){
   const tg=movTag(m); if(tg) b.appendChild(mk('span','tag',tg));
   const d=new Date(m.fecha+'T12:00:00');
   meta.append(b, mk('small','',[showDate?d.getDate()+' '+MESES[d.getMonth()].slice(0,3).toLowerCase():'', medioLabel(medioInfo(m.medio).label), m.usd?fmtUsd(m.usd):'', m.nota, m.excluir?t('no suma a gastos'):''].filter(Boolean).join(', ')));
-  const col = m.excluir?'var(--muted)':m.tipo==='ingreso'?'var(--in)':m.tipo==='ahorro'?'var(--accent)':'var(--out)';
+  const col = m.excluir?'var(--muted)':m.tipo==='ingreso'?'var(--in)':m.tipo==='ahorro'?'var(--accent2)':'var(--out)';
   const sg = m.tipo==='transfer' ? '' : (m.tipo==='ingreso' || m.monto<0) ? '+' : '−';
   const a=mk('span','amt num',sg+fmt(Math.abs(m.monto))); a.style.color=m.tipo==='transfer'?'var(--muted)':m.tipo==='gasto'&&!m.excluir?'var(--ink)':col;
   r.append(ico,meta,a);
@@ -2764,7 +2836,7 @@ function renderAhorro(){
   const list=movs.filter(m=>m.tipo==='ahorro').sort((a,b)=>b.fecha.localeCompare(a.fecha));
   if(!list.length){ h.appendChild(mk('p','note',t('Sin aportes ni retiros en ')+monthName(month)+'.')); }
   list.forEach(m=>{ const r=mk('div','lrow'); r.style.cursor='pointer'; const l=mk('div'); l.append(mk('b','',m.nota), mk('small','',' '+fmtDate(m.fecha)));
-    const v=mk('span','num',(m.monto<0?'−':'+')+fmt(Math.abs(m.monto))); v.style.color=m.monto<0?'var(--out)':'var(--accent)'; r.append(l,v); r.onclick=()=>openSheet(m); h.appendChild(r); });
+    const v=mk('span','num',(m.monto<0?'−':'+')+fmt(Math.abs(m.monto))); v.style.color=m.monto<0?'var(--out)':'var(--accent2)'; r.append(l,v); r.onclick=()=>openSheet(m); h.appendChild(r); });
 }
 function renderMetas(){
   renderAhorro();
@@ -2869,7 +2941,11 @@ async function saveFile(name, data, mime){
   if(isNative()){
     const fsP=window.capacitorFilesystemPluginCapacitor, shP=window.capacitorShare;
     if(!fsP || !shP){ toast('Falta el complemento para guardar archivos en la app'); return; }
-    try{ const r=await fsP.Filesystem.writeFile({path:name, data, directory:'CACHE', encoding:'utf8'}); await shP.Share.share({title:name, url:r.uri, dialogTitle:'Guardar o compartir'}); }
+    try{
+      let opts={path:name, data, directory:'CACHE', encoding:'utf8'};
+      if(data instanceof Uint8Array){ let bin=''; for(let i=0;i<data.length;i+=8192) bin+=String.fromCharCode.apply(null,data.subarray(i,i+8192)); opts={path:name, data:btoa(bin), directory:'CACHE'}; }
+      const r=await fsP.Filesystem.writeFile(opts); await shP.Share.share({title:name, url:r.uri, dialogTitle:'Guardar o compartir'});
+    }
     catch(e){ if(!/cancel/i.test(String(e && e.message))) toast('No se pudo exportar el archivo'); }
     return;
   }
@@ -3081,7 +3157,81 @@ function buildPrintSummary(){
   html+='</div></div>';
   return html;
 }
-$('#exportPdf').onclick=()=>{ $('#printArea').innerHTML=buildPrintSummary(); window.print(); };
+/* PDF propio para el APK: el WebView de Android no implementa window.print(). */
+const PDF_W=[278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+const PDF_MAP={' ':' ',' ':' ','−':'-','–':'\x96','—':'\x97','…':'\x85','‘':'\x91','’':'\x92','“':'\x93','”':'\x94','€':'\x80','•':'\x95'};
+function pdfText(s){
+  return String(s).replace(/[Ā-￿]/g,ch=>PDF_MAP[ch]||(/\p{L}/u.test(ch)?ch.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^\x00-\xff]/g,'?'):'')).replace(/\s+/g,' ').trim();
+}
+function pdfWidth(s,size){
+  let w=0; for(const ch of s){ const c=ch.normalize('NFD').charCodeAt(0); w+=(c>=32&&c<=126?PDF_W[c-32]:556); }
+  return w*size/1000;
+}
+function pdfFit(s,size,max){
+  if(pdfWidth(s,size)<=max) return s;
+  while(s.length && pdfWidth(s+'...',size)>max) s=s.slice(0,-1);
+  return s+'...';
+}
+function buildPdfSummary(){
+  const list=allMovs(), tt=totalsOf(list), sp=spentBy('gasto');
+  const lines=[];
+  lines.push({k:'title', l:'Mis cuentas \xb7 '+cap(MESES[+month.slice(5)-1])+' '+month.slice(0,4)});
+  lines.push({k:'row', l:t('Saldo del mes: '), r:fmt(tt.i-tt.o), bold:true});
+  lines.push({k:'row', l:t('Ingresos'), r:fmt(tt.i), color:'0.18 0.49 0.36'});
+  lines.push({k:'row', l:t('Gastos'), r:fmt(tt.o), color:'0.70 0.23 0.28'});
+  lines.push({k:'gap'});
+  lines.push({k:'h2', l:t('Gastos por categoría')});
+  const rows=Object.entries(sp).sort((a,b)=>b[1]-a[1]);
+  if(!rows.length) lines.push({k:'note', l:t('Sin gastos este mes.')});
+  rows.forEach(([c,v])=>{ const b=budOf(c); lines.push({k:'row', l:catLabel(c), r:fmt(v)+(b?t(' de ')+fmt(b):'')}); });
+  lines.push({k:'gap'});
+  lines.push({k:'h2', l:t('Movimientos')});
+  const movList=[...list].filter(m=>!m.excluir && m.tipo!=='transfer').sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  if(!movList.length) lines.push({k:'note', l:t('Sin movimientos este mes.')});
+  movList.forEach(m=>lines.push({k:'row', l:fmtDate(m.fecha)+' \xb7 '+catLabel(m.cat)+(m.nota?' \xb7 '+m.nota:''), r:(m.tipo==='ingreso'?'+':'-')+fmt(Math.abs(m.monto)), color:m.tipo==='ingreso'?'0.18 0.49 0.36':null}));
+
+  const W=595, H=842, M=50, pages=[]; let ops=[], y=H-M;
+  const esc=s=>s.replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)');
+  const txt=(s,x,yy,font,size,color)=>ops.push((color||'0.11 0.17 0.21')+' rg BT /'+font+' '+size+' Tf '+x.toFixed(2)+' '+yy.toFixed(2)+' Td ('+esc(s)+') Tj ET');
+  const newPage=()=>{ pages.push(ops.join('\n')); ops=[]; y=H-M; };
+  const need=h=>{ if(y-h<M) newPage(); };
+  lines.forEach(ln=>{
+    if(ln.k==='gap'){ y-=10; return; }
+    if(ln.k==='title'){ need(30); y-=22; txt(pdfText(ln.l),M,y,'F2',20,'0.24 0.35 0.50'); y-=12; return; }
+    if(ln.k==='h2'){ need(40); y-=18; txt(pdfText(ln.l),M,y,'F2',13); y-=6; ops.push('0.84 0.87 0.85 RG 0.5 w '+M+' '+(y).toFixed(2)+' m '+(W-M)+' '+(y).toFixed(2)+' l S'); y-=4; return; }
+    need(16); y-=16;
+    const font=ln.bold?'F2':'F1', size=10.5;
+    if(ln.k==='note'){ txt(pdfText(ln.l),M,y,'F1',size,'0.37 0.42 0.45'); return; }
+    const r=pdfText(ln.r||''), rw=pdfWidth(r,size);
+    txt(pdfFit(pdfText(ln.l),size,W-2*M-rw-14),M,y,font,size);
+    if(r) txt(r,W-M-rw,y,font,size,ln.color);
+  });
+  newPage();
+
+  const objs=[];
+  objs[1]='<< /Type /Catalog /Pages 2 0 R >>';
+  objs[3]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+  objs[4]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+  const kids=[];
+  pages.forEach(content=>{
+    const cId=objs.length, pId=cId+1;
+    objs[cId]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream';
+    objs[pId]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+W+' '+H+'] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents '+cId+' 0 R >>';
+    kids.push(pId+' 0 R');
+  });
+  objs[2]='<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+kids.length+' >>';
+  let out='%PDF-1.4\n'; const offs=[];
+  for(let i=1;i<objs.length;i++){ offs[i]=out.length; out+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
+  const xref=out.length;
+  out+='xref\n0 '+objs.length+'\n0000000000 65535 f \n'+offs.slice(1).map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('');
+  out+='trailer\n<< /Size '+objs.length+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF';
+  const bytes=new Uint8Array(out.length); for(let i=0;i<out.length;i++) bytes[i]=out.charCodeAt(i)&255;
+  return bytes;
+}
+$('#exportPdf').onclick=()=>{
+  if(isNative()){ saveFile('resumen-'+month+'.pdf', buildPdfSummary(), 'application/pdf'); return; }
+  $('#printArea').innerHTML=buildPrintSummary(); window.print();
+};
 document.querySelectorAll('#budMode button').forEach(b=>b.onclick=()=>{ budMode=b.dataset.bm; renderBudget(); });
 // Filtros
 let fqT=null; $('#fQ').addEventListener('input',e=>{ filt.q=e.target.value; clearTimeout(fqT); fqT=setTimeout(renderList,200); });
@@ -3226,7 +3376,7 @@ $('#mSave').onclick=async()=>{
   config=migrate(rawConfig || clone(DEF));
   if(!rawConfig){ config.moneda=detectCurrency(); config.idioma=detectLanguage(); saveConfig(); }
   applyMonthDayNames(); applyStaticI18n();
-  applyAccent((config.tema&&config.tema.h)||210); renderAccent(); renderMoneda(); renderIdioma();
+  applyTema(); renderTema(); renderMoneda(); renderIdioma();
   document.querySelectorAll('[placeholder="$0"]').forEach(i=>i.placeholder=config.moneda.simbolo+'0');
   { const d0=lsGet(monthKey())||{}; movs=d0.movs||[]; pagos=d0.pagos||{}; subSkip=d0.subSkip||[]; }
   medio=defMedio('gasto');
