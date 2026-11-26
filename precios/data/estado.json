@@ -5,23 +5,23 @@
       "ok": true,
       "productos": 1170,
       "error": "",
-      "intento": "2026-11-26T15:18:05.092Z",
+      "intento": "2026-11-26T15:25:23.189Z",
       "ultimoOk": "2026-11-26"
     },
     "santaisabel": {
       "nombre": "Santa Isabel",
       "ok": true,
-      "productos": 1076,
+      "productos": 1072,
       "error": "",
-      "intento": "2026-11-26T15:18:11.483Z",
+      "intento": "2026-11-26T15:25:25.440Z",
       "ultimoOk": "2026-11-26"
     },
     "tottus": {
       "nombre": "Tottus",
-      "ok": true,
-      "productos": 1384,
-      "error": "",
-      "intento": "2026-11-26T15:18:17.048Z",
+      "ok": false,
+      "productos": 0,
+      "error": "www.tottus.cl respondió 403",
+      "intento": "2026-11-26T15:24:17.287Z",
       "ultimoOk": "2026-11-26"
     }
   },
