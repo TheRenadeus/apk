@@ -57,6 +57,33 @@ y, como último recurso, un tipo de cambio de mercado (open.er-api.com).
 Siempre puedes corregirlo a mano en **Resumen → Datos**. Dentro de Claude no se puede consultar internet,
 así que ahí se ingresa manualmente.
 
+## Precios de supermercados
+
+La página `precios/` (en tu sitio: `https://TU_USUARIO.github.io/apk/precios/`) muestra los precios
+diarios de **Jumbo, Santa Isabel y Tottus** y cómo cambian en el tiempo:
+
+- **Tendencia:** un índice por supermercado (100 = primer día del período) y los productos que más
+  subieron o bajaron en los últimos 7 días.
+- **Buscar:** todos los productos, con filtros por tienda y categoría, precio por kg o litro y descuento del día.
+  Cada producto muestra su gráfico de precio y el mismo producto en los otros supermercados.
+- **Seguidos:** los productos que marcas con la estrella (se guardan solo en tu teléfono).
+
+**Cómo se llena.** Una tarea de GitHub (`.github/workflows/precios.yml`) ejecuta
+`scripts/update-prices.mjs` todos los días cerca de las 8:15. El script busca cada término de
+`precios/canasta.json` en las páginas públicas de búsqueda de cada supermercado y guarda los precios
+en `precios/data/<tienda>.json`. Solo agrega una fila cuando un precio cambia, así los archivos crecen poco.
+Si quieres seguir más productos, agrega términos a `precios/canasta.json`.
+
+Para activarla: en la pestaña **Actions**, abre **Actualizar precios** y toca **Run workflow**
+(los permisos de escritura ya los activaste para el dólar). El gráfico de tendencia aparece desde el segundo día.
+
+Para probar el script en tu computador: `node scripts/update-prices.mjs` (o `node scripts/update-prices.mjs tottus`
+para una sola tienda).
+
+**Supermercados que no están.** Líder y Unimarc bloquean el acceso automático a sus páginas
+(fila de espera y "Access Denied"), así que no se incluyen. Si un día alguna tienda cambia su sitio
+o bloquea la lectura, la página lo avisa y sigue mostrando los últimos precios conocidos.
+
 ## 4. Publicar cambios
 
 1. Reemplaza `index.html` por la versión nueva.

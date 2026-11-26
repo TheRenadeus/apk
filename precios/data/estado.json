@@ -1,0 +1,29 @@
+{
+  "tiendas": {
+    "jumbo": {
+      "nombre": "Jumbo",
+      "ok": true,
+      "productos": 1170,
+      "error": "",
+      "intento": "2026-11-26T15:18:05.092Z",
+      "ultimoOk": "2026-11-26"
+    },
+    "santaisabel": {
+      "nombre": "Santa Isabel",
+      "ok": true,
+      "productos": 1076,
+      "error": "",
+      "intento": "2026-11-26T15:18:11.483Z",
+      "ultimoOk": "2026-11-26"
+    },
+    "tottus": {
+      "nombre": "Tottus",
+      "ok": true,
+      "productos": 1384,
+      "error": "",
+      "intento": "2026-11-26T15:18:17.048Z",
+      "ultimoOk": "2026-11-26"
+    }
+  },
+  "fecha": "2026-11-26"
+}

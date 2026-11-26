@@ -1,5 +1,5 @@
 // Cambia este número cada vez que publiques cambios, para que el teléfono tome la versión nueva.
-const CACHE = 'mis-cuentas-v8';
+const CACHE = 'mis-cuentas-v9';
 const APP = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png'];
 
 self.addEventListener('install', e => {
@@ -17,6 +17,8 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   // El dólar y su histórico siempre se piden a internet, nunca a la copia guardada.
   const p = new URL(req.url).pathname;
+  // La página de precios (precios/) es aparte: no se guarda ni se mezcla con la copia de Mis cuentas.
+  if (p.includes('/precios/')) return;
   if (p.endsWith('usd.json') || p.endsWith('usd-history.json')) return;
   // Página: primero internet (para recibir actualizaciones), si no hay conexión usa la copia guardada.
   if (req.mode === 'navigate') {
